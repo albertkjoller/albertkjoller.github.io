@@ -11,7 +11,7 @@ paperurl: 'https://arxiv.org/abs/2502.08448'
 
 ---
 <p style="text-align: justify"> 
-Under review. A preprint is available on <a href="https://arxiv.org/abs/2502.08448">arXiv</a>. <br><br>
+A preprint is available on <a href="https://arxiv.org/abs/2502.08448">arXiv</a>. <br><br>
 
 Working implementation of the optimizer can be found on <a href="https://github.com/albertkjoller/sharpness-aware-minimizers">this GitHub repository</a>.
 </p>
