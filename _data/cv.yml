@@ -2,96 +2,76 @@
   type: map
   contents:
     - name: Full Name
-      value: Albert Einstein
-    - name: Date of Birth
-      value: 14th March 1879
-    - name: Languages
-      value: English, German
+      value: Albert Kjøller Jacobsen
+    - name: E-mail
+      value: name@dtu.dk by replacing name with akjja
+    # - name: Languages
+    #   value: English, Danish
 
 - title: Education
   type: time_table
   contents:
-    - title: PhD
-      institution: University of Zurich, Zurich, Switzerland
-      year: 1905
+    # - title: PhD (DDSA Fellowship)
+    #   institution: Technical University of Denmark
+    #   year: 2025-2028
+    #   description:
+    #     - "Project on <i>Geometric Approximate Bayesian Inference</i>, supervised by Georgios Arvanitidis."
+    #     - "Funded by the Danish Data Science Academy (DDSA)."
+    
+    - title: MSc. Eng. in Human-Centered Artificial Intelligence
+      institution: Technical University of Denmark
+      year: 2022-2025
       description:
-        - Description 1.
-        - Description 2.
-        - title: Description 3.
-          contents:
-            - Sub-description 1.
-            - Sub-description 2.
-    - title: Federal teaching diploma
-      institution: Eidgenössische Technische Hochschule, Zurich, Switzerland
-      year: 1900
+        - "Thesis on <i>Riemannian Sharpness-Aware Minimization for General Losses</i>."
+
+    - title: BSc. Eng. in Artificial Intelligence and Data Science
+      institution: Technical University of Denmark
+      year: 2019-2022
       description:
-        - Description 1.
-        - Description 2.
+        - "Thesis on <i>Visual Question Answering with Knowledge-based Semantics</i>."
+        - Exchange semester at <i>École Polytechnique Fédérale de Lausanne (EPFL)</i>, Switzerland, autumn 2021.
 
 - title: Experience
   type: time_table
   contents:
-    - title: Professor of Theoretical Physics
-      institution: Institute for Advanced Study, Princeton University
-      year: 1933 - 1955
+    - title: Research Assistant, w. Georgios Arvanitidis
+      institution: Technical University of Denmark
+      year: Feb. 2025-now
       description:
-        - Description 1.
-        - Description 2.
-        - title: Description 3.
-          contents:
-            - Sub-description 1.
-            - Sub-description 2.
-    - title: Visiting Professor
-      institution: California Institute of Technology, Pasadena, California, US
-      year: 1933
+        - "Working on geometric analysis of deep learning."
+    - title: Student Assistant, w. Lars Kai Hansen
+      institution: Technical University of Denmark
+      year: Feb.-Jun. 2024
       description:
-        - Description 1.
-        - Description 2.
-
-    - title: Director
-      institution: Kaiser Wilhelm Institute for Physics, Berlin, Germany.
-      year: 1917-1933
-
-    - title: Professor of Theoretical Physics
-      institution: Karl-Ferdinand University, Prague, Czechoslovakia
-      year: 1911 - 1917
+        - Working on the project <i>"Cognitive spaces - next generation AI explainability"</i>.
+    - title: Student Assistant
+      institution: Danish Energy Agency
+      year: 2022-2024
       description:
+        - Working on weather-based energy modeling and forecasting with machine learning.
+        # - Center for System Analysis and Innovation
 
-    - title: Associate Professor of Theoretical Physics
-      institution: University of Zurich, Zurich, Switzerland
-      year: 1909 - 1911
-
-- title: Open Source Projects
+- title: Grants, Awards, etc.
   type: time_table
   contents:
-    - title: <a href="https://github.com/alshedivat/al-folio">al-folio</a>
-      year: 2015-now
-      description: A beautiful, simple, clean, and responsive Jekyll theme for academics.
-
-- title: Honors and Awards
-  type: time_table
-  contents:
-    - year: 1921
+    # - year: 2025
+    #   items:
+    #     - <b>Awarded 1 of 10 DDSA PhD Fellowship Grants 2025</b> for pursuing my own research project on <i>Geometric Approximate Bayesian Inference</i> (~ 2.000.000 DKK).
+    - year: 2024
       items:
-        - Nobel Prize in Physics
-        - Matteucci Medal
-    - year: 2029
-      items:
-        - Max Planck Medal
+        - <b>Runner up (top three) for the best short paper</b> at the NeurIPS ENSLP workshop (with <i>How Redundant is the Transformer Stack in Speech Representation Models</i>).
 
 - title: Academic Interests
-  type: nested_list
-  contents:
-    - title: Topic 1.
-      items:
-        - Description 1.
-        - Description 2.
-    - title: Topic 2.
-      items:
-        - Description 1.
-        - Description 2.
-
-- title: Other Interests
   type: list
   contents:
-    - <u>Hobbies:</u> Hobby 1, Hobby 2, etc.
+    - Probabilistic machine learning, deep learning theory, differential geometry, signal processing and optimization.
+
+# - title: Community service
+#   type: nested_list
+#   contents:
+#     - title: Reviewer
+#       items:
+#         -
+#     - title: Organizer
+#       items:
+#         - 
