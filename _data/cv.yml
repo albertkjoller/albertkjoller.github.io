@@ -11,12 +11,12 @@
 - title: Education
   type: time_table
   contents:
-    # - title: PhD (DDSA Fellowship)
-    #   institution: Technical University of Denmark
-    #   year: 2025-2028
-    #   description:
-    #     - "Project on <i>Geometric Approximate Bayesian Inference</i>, supervised by Georgios Arvanitidis."
-    #     - "Funded by the Danish Data Science Academy (DDSA)."
+    - title: PhD (DDSA Fellowship)
+      institution: Technical University of Denmark
+      year: 2025-2028
+      description:
+        - "Project on <i>Geometric Approximate Bayesian Inference</i>, supervised by Georgios Arvanitidis."
+        - "Funded by the Danish Data Science Academy (DDSA), PhD Fellowship 2025."
     
     - title: MSc. Eng. in Human-Centered Artificial Intelligence
       institution: Technical University of Denmark
@@ -54,9 +54,9 @@
 - title: Grants, Awards, etc.
   type: time_table
   contents:
-    # - year: 2025
-    #   items:
-    #     - <b>Awarded 1 of 10 DDSA PhD Fellowship Grants 2025</b> for pursuing my own research project on <i>Geometric Approximate Bayesian Inference</i> (~ 2.000.000 DKK).
+    - year: 2025
+      items:
+        - <b>Awarded 1 of 11 DDSA PhD Fellowship Grants 2025</b> for pursuing my own research project on <i>Geometric Approximate Bayesian Inference</i> (~ 1.995.000 DKK).
     - year: 2024
       items:
         - <b>Runner up (top three) for the best short paper</b> at the NeurIPS ENSLP workshop (with <i>How Redundant is the Transformer Stack in Speech Representation Models</i>).
