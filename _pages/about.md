@@ -6,7 +6,7 @@ subtitle: PhD Student in Geometric Approximate Bayesian Inference
 
 profile:
   align: right
-  image: me.png
+  image: albertkjoller.png
   image_circular: false # crops the image to make it circular
   more_info: >
     <p><sub>Section for Cognitive Systems</sub></p>
