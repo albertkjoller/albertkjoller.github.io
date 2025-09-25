@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-Now officially an engineer! I defended my MSc. Thesis on *"Riemannian Sharpness-Aware Minimization for General Losses"* :sparkles:
+I defended my MSc. Thesis on *"Riemannian Sharpness-Aware Minimization for General Losses"* :sparkles:

@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-Just arrived in Hyderabad for ICASSP 2025 :airplane: I'll present our poster Friday morning!
+Our paper *"How Redundant Is the Transformer Stack in Speech Representation Models?"* was accepted for poster presentation at ICASSP 2025 in Hyderabad! 📃
