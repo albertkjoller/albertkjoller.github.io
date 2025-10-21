@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-The [Danish Data Science Academy (DDSA)](https://ddsa.dk/phdfellowshipcall2025/) has awarded me a PhD Fellowship grant! This is truly amazing and I can't wait to start my project on *geometric approximate Bayesian inference* 🔎
+The **[Danish Data Science Academy (DDSA)](https://ddsa.dk/phdfellowshipcall2025/)** has awarded me a PhD Fellowship grant for my project on *geometric approximate Bayesian inference.* This is truly amazing and I can't wait to get started!

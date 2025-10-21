@@ -1,19 +1,23 @@
 "tetkova":
   - firstname: ["Lenka"]
-    url: https://lenkatetkova.github.io/
+    # url: https://lenkatetkova.github.io/
 
 "dorszewski":
   - firstname: ["Teresa"]
-    url: https://www.dtu.dk/person/teresa-dorszewski?id=200066&entity=publications
+    # url: https://www.dtu.dk/person/teresa-dorszewski?id=200066&entity=publications
 
 "hansen":
   - firstname: ["Lars Kai"]
-    url: https://orbit.dtu.dk/en/persons/lars-kai-hansen
+    # url: https://orbit.dtu.dk/en/persons/lars-kai-hansen
   
 "arvanitidis":
   - firstname: ["Georgios"]
-    url: https://www2.compute.dtu.dk/~gear/
+    # url: https://www2.compute.dtu.dk/~gear/
 
 "gegenfurtner":
   - firstname: ["Johanna Marie"]
-    url: https://sites.google.com/view/jmgegenfurtner/
+    # url: https://sites.google.com/view/jmgegenfurtner/
+
+"jacobsen":
+  - firstname: ["Albert Kjøller"]
+    # url: https://albertkjoller.github.io/

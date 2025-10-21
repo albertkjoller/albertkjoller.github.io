@@ -1,12 +1,19 @@
 - title: General Information
   type: map
   contents:
-    - name: Full Name
+    - name: Name
       value: Albert Kjøller Jacobsen
     - name: E-mail
       value: name@dtu.dk by replacing name with akjja
+    - name: Interests
+      value: Probabilistic machine learning, deep learning theory, differential geometry and optimization.
     # - name: Languages
     #   value: English, Danish
+
+# - title: Academic Interests
+#   type: list
+#   contents:
+#     - Probabilistic machine learning, deep learning theory, differential geometry, signal processing and optimization.
 
 - title: Education
   type: time_table
@@ -60,18 +67,14 @@
     - year: 2024
       items:
         - <b>Runner up (top three) for the best short paper</b> at the NeurIPS ENSLP workshop (with <i>How Redundant is the Transformer Stack in Speech Representation Models</i>).
-
-- title: Academic Interests
-  type: list
+  
+- title: Community Service
+  type: nested_list
   contents:
-    - Probabilistic machine learning, deep learning theory, differential geometry, signal processing and optimization.
+    - title: Reviewer
+      items:
+        - Northern Lights Deep Learning Conference 2026 (abstract track)
 
-# - title: Community service
-#   type: nested_list
-#   contents:
-#     - title: Reviewer
-#       items:
-#         -
-#     - title: Organizer
-#       items:
-#         - 
+  #   # - title: Organizer
+  #   #   items:
+  #   #     - 

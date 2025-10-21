@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-I joined Georgios Arvanitidis' team as a research assistant :sunrise_over_mountains:
+I joined Georgios' crew as a research assistant. Thanks for welcoming me aboard!

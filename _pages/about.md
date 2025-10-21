@@ -31,10 +31,10 @@ I am a PhD researcher at the [Technical University of Denmark (DTU)](https://www
 
 I have a strong background in machine learning and hold a Master's degree in Human-Centered Artificial Intelligence with the thesis focusing on leveraging concepts from differential geometry in optimization for improving generalization performance.
 
-I'm particularly interested in the theoretical aspects of machine learning and deep learning. Currently, I'm focusing on gaining further knowledge on:
+I'm particularly interested in the theoretical aspects of machine learning and deep learning, specifically
 - differental geometry in machine learning
-- approximate Bayesian inference
-- deep learning theory
+- probabilistic machine learning and approximate Bayesian inference
+- deep learning theory and optimization
 
 <!-- I hold a Master's in Human-Centered AI and a Bachelor's degree in AI and Data Science from DTU. During my studies I visited [École Polytechnique Fédérale de Lausanne (EPFL)](https://www.epfl.ch/en/) as an exchange student.  -->
 

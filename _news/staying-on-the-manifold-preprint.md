@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-New preprint called *"Staying on the Manifold: Geometry-Aware Noise Injection"*. Joint work with Johanna and Georgios! 💥
+**New preprint** w. Johanna and Georgios: ["Staying on the Manifold: Geometry-Aware Noise Injection".](https://arxiv.org/pdf/2509.20201?)
