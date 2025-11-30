@@ -1,17 +1,30 @@
 ---
 ---
 
+@article{gegenfurtner2025memorisation,
+      bibtex_show={false},
+      selected={true},
+      abbr={EurIPS},
+      title={Reducing Memorisation in Generative Models via Riemannian Bayesian Inference}, 
+      author={Gegenfurtner*, Johanna Marie and <b><u>Jacobsen*</u></b>, <b><u>Albert Kj{\o}ller </u></b> and Arvanitidis, Georgios},
+      year={2025},
+      preview={riemann-laplace-V2.png},
+      venue={1st Workshop on Principles of Generative Modeling (PriGM)},
+      pdf={reducing-memorisation.pdf},
+      abstract={How to balance memorisation and generalisation in generative models remains an open task. To investigate this, we employ Bayesian methods, which have recently been proposed to predict the uncertainty of generated samples. In our work, we employ the Riemannian Laplace approximation, from which we can sample generative models that resemble the trained one. Our geometry-aware approach yields improved results compared to the Euclidean counterpart.}
+}
+
 @article{jacobsen2025stayingmanifoldgeometryawarenoise,
       bibtex_show={true},
       code={https://github.com/albertkjoller/geometric-ml/tree/main/staying-on-the-manifold},
       selected={true},
-      abbr={Preprint},
+      abbr={NLDL},
       title={Staying on the Manifold: Geometry-Aware Noise Injection}, 
       author={<b><u>Jacobsen*</u></b>, <b><u>Albert Kj{\o}ller </u></b> and Gegenfurtner*, Johanna Marie and Arvanitidis, Georgios},
       journal={arXiv preprint arXiv:2509.20201},
       year={2025},
-      preview={staying-on-the-manifold.png},
-      venue={Preprint},
+      preview={staying-on-the-manifold-V2.png},
+      venue={NLDL},
       pdf={staying-on-the-manifold.pdf},
       abstract={It has been shown that perturbing the input during training implicitly regularises the gradient of the learnt function, leading to smoother models and enhancing generalisation. However, previous research mostly considered the addition of ambient noise in the input space, without considering the underlying structure of the data. In this work, we propose several methods of adding geometry-aware input noise that accounts for the lower dimensional manifold the input space inhabits. We start by projecting ambient Gaussian noise onto the tangent space of the manifold. In a second step, the noise sample is mapped on the manifold via the associated geodesic curve. We also consider Brownian motion noise, which moves in random steps along the manifold. We show that geometry-aware noise leads to improved generalization and robustness to hyperparameter selection on highly curved manifolds, while performing at least as well as training without noise on simpler manifolds. Our proposed framework extends to learned data manifolds.}
 }
@@ -41,7 +54,7 @@
   year={2025},
   organization={IEEE},
   abbr={ICASSP},
-  preview={redundancy.png},
+  preview={redundancy-V2.png},
   pdf={redundancy.pdf},
   abstract={Self-supervised speech representation models, particularly those leveraging transformer architectures, have demonstrated remarkable performance across various tasks such as speech recognition, speaker identification, and emotion detection. Recent studies on transformer models revealed high redundancy between layers and the potential for significant pruning, which we will investigate here for transformer-based speech representation models. We perform a detailed analysis of layer similarity in speech representation models using three similarity metrics: cosine similarity, centered kernel alignment, and mutual nearest-neighbor alignment. Our findings reveal a block-like structure of high similarity, suggesting two main processing steps and significant redundancy of layers. We demonstrate the effectiveness of pruning transformer-based speech representation models without the need for post-training, achieving up to 40% reduction in transformer layers while maintaining over 95% of the model’s predictive capacity. Furthermore, we employ a knowledge distillation method to substitute the entire transformer stack with mimicking layers, reducing the network size by 95-98% and the inference time by up to 94%. This substantial decrease in computational load occurs without considerable performance loss, suggesting that the transformer stack is almost completely redundant for downstream applications of speech representation models.},
   poster={poster_redundancy.pdf}, 

@@ -8,10 +8,10 @@ profile:
   align: right
   image: albertkjoller.png
   image_circular: false # crops the image to make it circular
-  more_info: >
-    <p><sub>Section for Cognitive Systems</sub></p>
-    <p><sub>Dept. of Applied Mathematics and Computer Science</sub></p>
-    <p><sub>Technical University of Denmark</sub></p>
+  # more_info: >
+  #   <p><sub>Section for Cognitive Systems</sub></p>
+  #   <p><sub>Dept. of Applied Mathematics and Computer Science</sub></p>
+  #   <p><sub>Technical University of Denmark</sub></p>
 
 selected_papers: true # includes a list of papers marked as "selected={true}"
 social: true # includes social icons at the bottom of the page
@@ -26,15 +26,14 @@ latest_posts:
   scrollable: true # adds a vertical scroll bar if there are more than 3 new posts items
   limit: 3 # leave blank to include all the blog posts
 ---
+I am a PhD researcher at the [Technical University of Denmark (DTU)](https://www.dtu.dk/english), supervised by [Georgios Arvanitidis](https://www2.compute.dtu.dk/~gear/) from  the [Section for Cognitive Systems](https://www.compute.dtu.dk/sections/cogsys). My project seeks to advance approximate Bayesian inference by leveraging differential geometry.
 
-I am a PhD researcher at the [Technical University of Denmark (DTU)](https://www.dtu.dk/english), supervised by [Georgios Arvanitidis](https://www2.compute.dtu.dk/~gear/) from  the [Section for Cognitive Systems](https://www.compute.dtu.dk/sections/cogsys). My project seeks to advance approximate Bayesian inference methods by leveraging concepts from differential geometry.
+I have a strong background in machine learning and hold a Master's degree in Human-Centered Artificial Intelligence with the thesis focusing on leveraging concepts from differential geometry in optimization for improving generalization performance. 
 
-I have a strong background in machine learning and hold a Master's degree in Human-Centered Artificial Intelligence with the thesis focusing on leveraging concepts from differential geometry in optimization for improving generalization performance.
-
-I'm particularly interested in the theoretical aspects of machine learning and deep learning, specifically
-- differental geometry in machine learning
-- probabilistic machine learning and approximate Bayesian inference
-- deep learning theory and optimization
+I'm particularly interested in:
+- probabilistic machine learning and approximate Bayesian inference,
+- deep learning theory and optimization,
+- differental geometry in machine learning.
 
 <!-- I hold a Master's in Human-Centered AI and a Bachelor's degree in AI and Data Science from DTU. During my studies I visited [École Polytechnique Fédérale de Lausanne (EPFL)](https://www.epfl.ch/en/) as an exchange student.  -->
 

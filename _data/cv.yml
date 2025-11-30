@@ -71,9 +71,10 @@
 - title: Community Service
   type: nested_list
   contents:
-    - title: Reviewer
+    - title: Reviewer, volunteering, etc.
       items:
-        - Northern Lights Deep Learning Conference 2026 (abstract track)
+        - Northern Lights Deep Learning Conference 2026 (reviewer, abstract track)
+        - EurIPS 2025 (volunteer)
 
   #   # - title: Organizer
   #   #   items:
