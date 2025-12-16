@@ -30,12 +30,12 @@ ninja.data = [{
               handler: () => {
                 window.location.href = "/teaching/";
               },
-            },{id: "dropdown-blog",
-              title: "blog",
+            },{id: "dropdown-notes",
+              title: "notes",
               description: "",
               section: "Dropdown",
               handler: () => {
-                window.location.href = "/blog/";
+                window.location.href = "/notes/";
               },
             },{id: "news-my-personal-webpage-is-online-looking-forward-to-share-my-academic-progress-here",
           title: 'My personal webpage is online - looking forward to share my academic progress...',
