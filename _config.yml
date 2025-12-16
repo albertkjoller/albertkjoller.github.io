@@ -82,9 +82,9 @@ bing_site_verification: # out your bing-site-verification ID (Bing Webmaster)
 # Blog
 # -----------------------------------------------------------------------------
 
-blog_name: albertkjoller # blog_name will be displayed in your blog page
+blog_name: Notes # blog_name will be displayed in your blog page
 blog_description: 
-permalink: /blog/:year/:title/
+permalink: /notes/:year/:title/
 lsi: false # produce an index for related posts
 
 # Pagination
@@ -245,9 +245,9 @@ jekyll-archives:
   posts:
     enabled: [year, tags, categories] # enables year, tag and category archives (remove if you need to disable one of them).
     permalinks:
-      year: "/blog/:year/"
-      tags: "/blog/:type/:name/"
-      categories: "/blog/:type/:name/"
+      year: "/notes/:year/"
+      tags: "/notes/:type/:name/"
+      categories: "/notes/:type/:name/"
   books:
     enabled: [year, tags, categories] # enables year, tag and category archives (remove if you need to disable one of them).
 
