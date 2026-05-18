@@ -16,26 +16,26 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/publications/";
           },
-        },{id: "nav-cv",
-          title: "cv",
+        },{id: "nav-notes",
+          title: "notes",
           description: "",
           section: "Navigation",
           handler: () => {
-            window.location.href = "/cv/";
+            window.location.href = "/notes/index.html";
           },
-        },{id: "dropdown-teaching",
+        },{id: "dropdown-cv",
+              title: "cv",
+              description: "",
+              section: "Dropdown",
+              handler: () => {
+                window.location.href = "/cv/";
+              },
+            },{id: "dropdown-teaching",
               title: "teaching",
               description: "",
               section: "Dropdown",
               handler: () => {
                 window.location.href = "/teaching/";
-              },
-            },{id: "dropdown-notes",
-              title: "notes",
-              description: "",
-              section: "Dropdown",
-              handler: () => {
-                window.location.href = "/notes/";
               },
             },{id: "news-my-personal-webpage-is-online-looking-forward-to-share-my-academic-progress-here",
           title: 'My personal webpage is online - looking forward to share my academic progress...',
@@ -72,6 +72,9 @@ ninja.data = [{
           description: "",
           section: "News",},{id: "news-new-preprint-we-extend-reducing-memorisation-in-generative-models-via-riemannian-bayesian-inference-to-a-full-paper-code-will-be-released-soon",
           title: 'New preprint: we extend “Reducing Memorisation in Generative Models via Riemannian Bayesian Inference”...',
+          description: "",
+          section: "News",},{id: "news-new-preprint-don-t-stop-me-yet-sampling-loss-minima-via-dissipative-riemannian-mechanics-i-m-super-excited-about-this-work-that-has-been-a-long-time-coming-we-propose-a-geometry-aware-sampler-motivated-by-classical-mechanics-to-sample-functions-that-remain-consistent-on-training-data-but-vary-elsewhere",
+          title: 'New preprint: “Don’t Stop Me Yet: Sampling Loss Minima via Dissipative Riemannian Mechanics”....',
           description: "",
           section: "News",},{id: "projects-project-1",
           title: 'project 1',
