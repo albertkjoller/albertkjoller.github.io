@@ -9,3 +9,5 @@ citation: true
 ---
 
 This is an example post that can be cited. The content of the post ends here, while the citation information is automatically provided below. The only thing needed is for you to set the `citation` key in the front matter to `true`. -->
+
+<!-- Note: to appear on the website, the post filename must start with the publication date, e.g. "2024-04-28-post-citation.md" -->

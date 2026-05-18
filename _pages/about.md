@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: PhD researcher in Geometric Approximate Bayesian Inference 
+subtitle: DDSA PhD Fellow | Geometric Approximate Bayesian Inference 
 
 profile:
   align: right
@@ -26,9 +26,7 @@ latest_posts:
   scrollable: true # adds a vertical scroll bar if there are more than 3 new posts items
   limit: 3 # leave blank to include all the blog posts
 ---
-I am a PhD researcher at the [Technical University of Denmark (DTU)](https://www.dtu.dk/english), supervised by [Georgios Arvanitidis](https://www2.compute.dtu.dk/~gear/) from  the [Section for Cognitive Systems](https://www.compute.dtu.dk/sections/cogsys). My project seeks to advance approximate Bayesian inference by leveraging differential geometry.
-
-I have a strong background in machine learning and hold a Master's degree in Human-Centered Artificial Intelligence where I focused on leveraging concepts from differential geometry in optimization for improving generalization performance. 
+I am a DDSA PhD Fellow at the [Technical University of Denmark (DTU)](https://www.dtu.dk/english), supervised by [Georgios Arvanitidis](https://www2.compute.dtu.dk/~gear/) from  the [Section for Cognitive Systems](https://www.compute.dtu.dk/sections/cogsys). My research advances approximate Bayesian inference by leveraging differential geometry. I got into this through my earlier work on geometry in optimization for improving generalization performance.
 
 I'm particularly interested in:
 - probabilistic machine learning and approximate Bayesian inference,
