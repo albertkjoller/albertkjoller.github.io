@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-**New preprint:** ["Beyond Laplace: Closed-form wrapped Gaussian posterior approximations on statistical manifolds".](https://arxiv.org/pdf/2607.01909v1) Amazing work by Marcelo and I'm happy to have helped out. 
+**New preprint:** ["Beyond Laplace: Closed-form wrapped Gaussian posterior approximations on statistical manifolds".](https://arxiv.org/pdf/2607.01909) Amazing work by Marcelo and I'm happy to have helped out. 

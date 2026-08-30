@@ -56,6 +56,11 @@
             </a>
           </li>
 
+          <!-- News (anchors to the news section on the about page) -->
+          <li class="nav-item">
+            <a class="nav-link" href="{{ '/' | relative_url }}#news">News</a>
+          </li>
+
           <!-- Other pages -->
           {% assign sorted_pages = site.pages | sort: 'nav_order' %}
           {% for p in sorted_pages %}

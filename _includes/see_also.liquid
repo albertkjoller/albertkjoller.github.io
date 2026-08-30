@@ -1,0 +1,43 @@
+{% if page.see_also %}
+<style>
+  .see-also-grid { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.8rem; }
+  .see-also-card {
+    flex: 1 1 200px;
+    padding: 0.9em 1.1em;
+    border: 1px solid rgba(0,0,0,0.12);
+    border-radius: 5px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    display: block;
+  }
+  .see-also-card:hover {
+    border-color: rgba(0,0,0,0.3);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  }
+  .see-also-card .sa-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin: 0 0 0.3em;
+    line-height: 1.35;
+    color: inherit;
+  }
+  .see-also-card .sa-desc {
+    font-size: 0.78rem;
+    color: rgba(0,0,0,0.55);
+    margin: 0;
+    line-height: 1.45;
+  }
+</style>
+<div style="margin-top: 2.5rem; padding-top: 1.2rem; border-top: 1px solid rgba(0,0,0,0.1);">
+  <p style="font-size:0.65rem; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; color:rgba(0,0,0,0.4); margin:0 0 0.8rem;">See also</p>
+  <div class="see-also-grid">
+    {% for item in page.see_also %}
+    <a class="see-also-card" href="{{ item.url | relative_url }}">
+      <p class="sa-title">{{ item.title }}</p>
+      {% if item.description %}<p class="sa-desc">{{ item.description }}</p>{% endif %}
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}

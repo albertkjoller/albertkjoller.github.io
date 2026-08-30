@@ -11,7 +11,8 @@
     {% when 'discord_id' %}
       <a href="https://discord.com/users/{{ social[1] }}" title="Discord"><i class="fa-brands fa-discord"></i></a>
     {% when 'email' %}
-      <a href="mailto:{{ social[1] | encode_email }}" title="email"><i class="fa-solid fa-envelope"></i></a>
+      {% assign reversed_email = social[1] | split: '' | reverse | join: '' %}
+      <a href="#" class="email-link" data-e="{{ reversed_email }}" title="email" rel="nofollow"><i class="fa-solid fa-envelope"></i></a>
     {% when 'facebook_id' %}
       <a href="https://facebook.com/{{ social[1] }}" title="Facebook"><i class="fa-brands fa-facebook"></i></a>
     {% when 'flickr_id' %}
@@ -108,3 +109,10 @@
       </a>
   {% endcase %}
 {% endfor %}
+
+<script>
+  document.querySelectorAll('.email-link').forEach(function (el) {
+    var addr = el.getAttribute('data-e').split('').reverse().join('');
+    el.setAttribute('href', 'mailto:' + addr);
+  });
+</script>

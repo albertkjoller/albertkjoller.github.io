@@ -7,7 +7,7 @@ first_name: Albert Kjøller
 middle_name: 
 last_name: Jacobsen
 contact_note: >
-  Feel free to contact me on e-mail !
+  Feel free to reach out !
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
 footer_text: >
 keywords: jekyll, jekyll-theme, academic-website, portfolio-website # add your own keywords or leave empty

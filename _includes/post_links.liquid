@@ -1,0 +1,14 @@
+{% if page.paper_url or page.code_url %}
+<div style="display:flex; gap:1em; flex-wrap:wrap; margin: 1.5em 0; padding: 0.8em 1.2em; border: 1px solid rgba(0,0,0,0.12); border-radius: 6px; font-size: 0.9em; background: rgba(0,0,0,0.02);">
+  {% if page.paper_url %}
+  <a href="{{ page.paper_url }}" target="_blank" rel="noopener" style="display:flex; align-items:center; gap:0.4em; text-decoration:none; color:inherit;">
+    <i class="fas fa-file-pdf"></i> Paper
+  </a>
+  {% endif %}
+  {% if page.code_url %}
+  <a href="{{ page.code_url }}" target="_blank" rel="noopener" style="display:flex; align-items:center; gap:0.4em; text-decoration:none; color:inherit;">
+    <i class="fab fa-github"></i> Code
+  </a>
+  {% endif %}
+</div>
+{% endif %}

@@ -20,7 +20,8 @@ pagination:
 
 <div class="notes-header">
   <h1 class="notes-title">Notes</h1>
-  <p class="notes-intro">Short notes and expositions on geometric approaches to probabilistic machine learning. Written to give an accessible entry point into my research — aimed at readers with some background in probability and calculus, though the more technical pieces assume familiarity with differential geometry.</p>
+  <p class="notes-intro">Walk-throughs of selected papers and machine learning topics I find interesting.
+  </p>
 </div>
 
 {% if site.display_tags and site.display_tags.size > 0 or site.display_categories and site.display_categories.size > 0 %}
@@ -51,10 +52,11 @@ pagination:
 <div class="notes-grid notes-grid--featured">
   {% for post in featured_posts %}
   {% if post.external_source == blank %}
-    {% assign read_time = post.content | number_of_words | divided_by: 180 | plus: 1 %}
+    {% assign read_time = post.content | strip_html | number_of_words | plus: 199 | divided_by: 200 %}
   {% else %}
-    {% assign read_time = post.feed_content | strip_html | number_of_words | divided_by: 180 | plus: 1 %}
+    {% assign read_time = post.feed_content | strip_html | number_of_words | plus: 199 | divided_by: 200 %}
   {% endif %}
+  {% if read_time == 0 %}{% assign read_time = 1 %}{% endif %}
   <article class="note-card note-card--featured">
     <div class="note-card-pin"><i class="fa-solid fa-thumbtack fa-xs"></i></div>
     <div class="note-card-badges">
@@ -85,10 +87,11 @@ pagination:
 
   {% for post in postlist %}
   {% if post.external_source == blank %}
-    {% assign read_time = post.content | number_of_words | divided_by: 180 | plus: 1 %}
+    {% assign read_time = post.content | strip_html | number_of_words | plus: 199 | divided_by: 200 %}
   {% else %}
-    {% assign read_time = post.feed_content | strip_html | number_of_words | divided_by: 180 | plus: 1 %}
+    {% assign read_time = post.feed_content | strip_html | number_of_words | plus: 199 | divided_by: 200 %}
   {% endif %}
+  {% if read_time == 0 %}{% assign read_time = 1 %}{% endif %}
   {% assign year = post.date | date: "%Y" %}
   {% assign tags = post.tags | join: "" %}
   {% assign categories = post.categories | join: "" %}

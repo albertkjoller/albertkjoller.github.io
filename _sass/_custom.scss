@@ -102,6 +102,113 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+// ─── About page: above-the-fold ──────────────────────────────────────────────
+// Hero + bio are held to at least one full viewport tall, so "news" (and
+// everything after it) starts no earlier than one screen-length down.
+
+.above-the-fold {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+// Subtle hint that there's more below the fold — small, muted, gently
+// bobbing rather than a loud call to action. Fixed to the viewport (not
+// the fold container) so it always sits in the visible first screen, even
+// if the bio content pushes the fold taller than 100vh. Fades out once
+// the page has actually been scrolled (see the inline script below).
+.scroll-hint {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--global-text-color-light);
+  opacity: 0.5;
+  font-size: 1.1rem;
+  z-index: 5;
+  animation: scroll-hint-bob 2.6s ease-in-out infinite;
+  transition: opacity 0.25s ease;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+@keyframes scroll-hint-bob {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(5px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-hint {
+    animation: none;
+  }
+}
+
+// Give the bio text more breathing room below the hero, rather than
+// crowding right up against it.
+.above-the-fold .clearfix {
+  margin-top: 1.75rem;
+}
+
+// Fixed navbar covers the top of the viewport, so an anchor jump to #news
+// needs breathing room or the heading lands hidden underneath it.
+#news {
+  scroll-margin-top: 5rem;
+}
+
+// ─── About page: hero ─────────────────────────────────────────────────────────
+// Name and subtitle centered, with the distribution band (below) sitting
+// behind them as a quiet backdrop rather than a competing side element.
+
+.hero-header {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 320px;
+  padding: 2rem 0;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.hero-text {
+  position: relative;
+  z-index: 1;
+}
+
+// ─── Distribution band: hero backdrop ────────────────────────────────────────
+// Base include (_includes/distribution-band.liquid) — a soft density "hill"
+// with a few gently warped (not perfectly circular) level-set contours around
+// it, evoking geometry shaping a distribution's level sets. Static — no
+// moving parts.
+
+.hero-band {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(820px, 100%);
+  height: auto;
+  color: #d9642e;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 767px) {
+  .hero-band {
+    display: none;
+  }
+}
+
+
 // ─── About page: name + subtitle ─────────────────────────────────────────────
 
 // Name: large, high-contrast, serif
@@ -117,7 +224,7 @@ h1, h2, h3, h4, h5, h6 {
 // Subtitle: uppercase label, accent color, sans-serif — contrasts with serif name
 p.desc {
   font-family: 'Inter', sans-serif;
-  font-size: 0.72rem;
+  font-size: 0.85rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -319,8 +426,22 @@ body {
 
 // ─── Social icons ─────────────────────────────────────────────────────────────
 
+.social {
+  margin-top: 3.5rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--global-divider-color);
+}
+
 .social .contact-icons {
   font-size: 2.8rem;
+
+  a {
+    margin: 0 0.5rem;
+  }
+}
+
+.social .contact-note {
+  margin-top: 0.5rem;
 }
 
 // ─── Notes index ─────────────────────────────────────────────────────────────
@@ -518,8 +639,11 @@ body {
   max-width: 68ch;
 }
 
-// Post header: cleaner visual hierarchy
-.post .post-header {
+// Post header: cleaner visual hierarchy. Excludes .hero-header (the about
+// page) — that one has its own sizing/spacing above, and this rule's higher
+// specificity was silently overriding it (shrinking the name, adding an
+// unintended divider).
+.post .post-header:not(.hero-header) {
   padding-bottom: 1.5rem;
   margin-bottom: 2rem;
   border-bottom: 1px solid var(--global-divider-color);

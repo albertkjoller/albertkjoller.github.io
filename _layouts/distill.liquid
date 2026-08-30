@@ -12,7 +12,12 @@
         {{ page._styles }}
       </style>
     {% endif %}
+
   </head>
+
+  {% assign _words = content | strip_html | number_of_words %}
+  {% assign _reading_time = _words | plus: 199 | divided_by: 200 %}
+  {% if _reading_time == 0 %}{% assign _reading_time = 1 %}{% endif %}
 
   <d-front-matter>
     <script async type="text/json">
@@ -20,6 +25,7 @@
             "title": "{{ page.title }}",
             "description": "{{ page.description }}",
             "published": "{{ page.date | date: '%B %d, %Y' }}",
+            "readingTime": "~{{ _reading_time }} min read",
             "authors": [
               {% for author in page.authors %}
               {
@@ -66,6 +72,7 @@
         <d-byline></d-byline>
       {% endif %}
 
+
       <d-article>
         {% if page.toc %}
           <d-contents>
@@ -109,5 +116,6 @@
 
     <!-- JavaScripts -->
     {% include distill_scripts.liquid %}
+
   </body>
 </html>
