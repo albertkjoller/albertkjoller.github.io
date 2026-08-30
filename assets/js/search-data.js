@@ -37,7 +37,18 @@ ninja.data = [{
               handler: () => {
                 window.location.href = "/teaching/";
               },
-            },{id: "news-my-personal-webpage-is-online-looking-forward-to-share-my-academic-progress-here",
+            },{id: "post-leveraging-the-shape-of-data-to-improve-generalization",
+        
+          title: "Leveraging the shape of data to improve generalization",
+        
+        description: "On how to ensure that augmentations respect the shape of data.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/notes/2026/input_noise/";
+          
+        },
+      },{id: "news-my-personal-webpage-is-online-looking-forward-to-share-my-academic-progress-here",
           title: 'My personal webpage is online - looking forward to share my academic progress...',
           description: "",
           section: "News",},{id: "news-i-defended-my-msc-thesis-about-riemannian-sharpness-aware-minimization-under-supervision-of-georgios-arvanitidis",
@@ -79,11 +90,14 @@ ninja.data = [{
           section: "News",},{id: "news-new-preprint-beyond-laplace-closed-form-wrapped-gaussian-posterior-approximations-on-statistical-manifolds-amazing-work-by-marcelo-and-i-m-happy-to-have-helped-out",
           title: 'New preprint: “Beyond Laplace: Closed-form wrapped Gaussian posterior approximations on statistical manifolds”. Amazing...',
           description: "",
-          section: "News",},{id: "news-i-ll-be-attending-the-ellis-doctoral-symposium-on-trustworthy-ai-in-lisbon-next-week-looking-forward-to-meeting-fellow-phd-students-as-well-as-giving-a-talk-and-a-poster-presentation-on-my-project-in-geometric-approximate-bayesian-inference",
-          title: 'I’ll be attending the ELLIS Doctoral Symposium on Trustworthy AI in Lisbon next...',
+          section: "News",},{id: "news-i-ll-be-attending-the-ellis-doctoral-symposium-eds-on-trustworthy-ai-in-lisbon-next-week-looking-forward-to-meeting-fellow-phd-students-as-well-as-giving-a-talk-and-a-poster-presentation-on-my-project-in-geometric-approximate-bayesian-inference",
+          title: 'I’ll be attending the ELLIS Doctoral Symposium (EDS) on Trustworthy AI in Lisbon...',
           description: "",
           section: "News",},{id: "news-i-got-an-honourable-mention-for-the-best-poster-at-eds-in-lisbon-thank-you-so-much-to-everyone-who-stopped-by",
           title: 'I got an honourable mention for the best poster at EDS in Lisbon....',
+          description: "",
+          section: "News",},{id: "news-i-m-attending-the-machine-learning-summer-school-at-the-max-planck-institute-for-intelligent-systems-in-tübingen-for-the-next-two-weeks",
+          title: 'I’m attending the Machine Learning Summer School at the Max Planck Institute for...',
           description: "",
           section: "News",},{id: "projects-project-1",
           title: 'project 1',
