@@ -226,7 +226,7 @@ J = manifold.jacobian(u)  # shape (B, D, d) = (1, 3, 2)
 ```
 </details>
 
-A simple geometry-aware noise injection method is to pull ambient space noise samples closer to the manifold by *projecting* $\boldsymbol{\epsilon}$ onto the tangent space, which removes whatever part of the injected noise that points off the manifold. The tangential noise sample is then simply $\boldsymbol{\epsilon}_\top = \mathbf{P},\boldsymbol{\epsilon}$ where $\mathbf{P}$ is the projection matrix for the base point. We refer to the paper for further details and note that tangential noise is still not exactly on the manifold as the tangent space only intersects with the manifold at the base point $\boldsymbol{x}=X(\boldsymbol{u})$.
+A simple geometry-aware noise injection method is to pull ambient space noise samples closer to the manifold by *projecting* $\boldsymbol{\epsilon}$ onto the tangent space, which removes whatever part of the injected noise that points off the manifold. The tangential noise sample is then simply $\boldsymbol{\epsilon}_\top = \mathbf{P}\boldsymbol{\epsilon}$ where $\mathbf{P}$ is the projection matrix for the base point. We refer to the paper for further details and note that tangential noise is still not exactly on the manifold as the tangent space only intersects with the manifold at the base point $\boldsymbol{x}=X(\boldsymbol{u})$.
 
 
 <div class="row">
@@ -261,7 +261,7 @@ Note that $\boldsymbol{\epsilon}$ had a component sticking straight out of the s
 
 ### Geodesic noise
 
-A *geodesic* can conceptually be thought of as the straightest path on the manifold. In the parameter space, this is generally different from the straight line shown earlier since manifolds are often curved objects -- this is what bends the motion of a geodesic. In comparison to tangent space noise, adding noise via geodesics means that the augmented samples are guaranteed to stay on the manifold.
+A *geodesic* can conceptually be thought of as the straightest path on the manifold. In the parameter space, this is generally different from the straight line shown earlier since manifolds are often curved objects -- this is what bends the motion of a geodesic. In comparison to tangent space noise, adding noise via geodesics means that the augmented samples stay on the manifold by construction.
 
 We refer the interested reader to the paper for a proper definition of geodesics but note that geodesics rely on a *metric*. Loosely speaking, a metric $g$ tells you how to measure lengths and angles on the data manifold using only the parameter-space coordinates: a small step $d\boldsymbol{u}$ from $\boldsymbol{u}$ approximately corresponds to a step $\mathbf{J}_X(\boldsymbol{u})\, d\boldsymbol{u}$ on the manifold. Its squared length defines the inner product on the manifold:
 
@@ -281,7 +281,7 @@ Intuitively, the two diagonal entries of $g$ measure how far a step in the param
 <div class="narrow-fig">
 {% include figure.liquid path="assets/img/noise_injection/figure4_metric.png" title="Indicatrix of the metric for the sphere" class="img-fluid" %}
 <div class="caption">
-    <span class="fig-num">Figure 4.</span><span>Indicatrices of the metric $g(u_1,u_2)$, shrinking toward the poles where at $u_1\in\{0,\pi\}$.</span>
+    <span class="fig-num">Figure 4.</span><span>Indicatrices of the metric $g(u_1,u_2)$, shrinking toward the poles where $u_1\in\{0,\pi\}$.</span>
 </div>
 </div>
 
@@ -340,7 +340,7 @@ $$
   du_k(t) = \frac{1}{2} \underbrace{\frac{1}{2\sqrt{\det g}} \sum_{l=1}^{d} \frac{\partial}{\partial u_l}\left(\sqrt{\det g}\cdot g^{kl}\right)}_{\text{drift}}\, dt + \underbrace{\left(\sqrt{g^{-1}}\, dB(t)\right)_k}_{\text{noise, reshaped by } g}.
 $$
 
-The *noise term* is the same flat-space Gaussian increment $dB(t)$ from a Gaussian, just passed through $\sqrt{g^{-1}}$ so that a step of a given size always corresponds to the same physical distance on the manifold. The *drift term* is a correction accounting for how $g$ itself changes across the manifold, so the random walk does not end up systematically biased toward one region. We refer the interested reader to the paper and related works for further details.
+The *noise term* is the same Gaussian increment $dB(t)$ introduced earlier, just passed through $\sqrt{g^{-1}}$ so that a step of a given size always corresponds to the same physical distance on the manifold. The *drift term* is a correction accounting for how $g$ itself changes across the manifold, so the random walk does not end up systematically biased toward one region. We refer the interested reader to the paper and related works for further details.
 
 In code, `brownian_motion` discretizes this SDE and computes an instance of it as follows:
 ```python
