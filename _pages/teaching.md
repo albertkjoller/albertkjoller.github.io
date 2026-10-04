@@ -24,7 +24,9 @@ I helped redesigning the exercise content and format for the Machine Learning co
 
 #### Thesis-related supervision
 
-I have co-supervised the following theses at DTU Compute, together with Georgios Arvanitidis.
+I have co-supervised one MSc. thesis at DTU Compute, together with Georgios Arvanitidis. If you're a local student wanting to work on related topics for a special course or thesis, let me know.
 
-- **Andreas Theilgaard** - *Geometric Variational Inference* (2026)
+<!-- I have co-supervised the following theses at DTU Compute, together with Georgios Arvanitidis. -->
+
+<!-- - **Andreas Theilgaard** - *Geometric Variational Inference* (2026) -->
 

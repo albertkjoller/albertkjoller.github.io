@@ -1,4 +1,4 @@
-- title: General Information
+- title: General information
   type: map
   contents:
     - name: Name
@@ -58,7 +58,7 @@
         - Working on weather-based energy modeling and forecasting with machine learning.
         # - Center for System Analysis and Innovation
 
-- title: Grants, Awards, etc.
+- title: Grants, awards, etc.
   type: time_table
   contents:
     - year: 2026
@@ -71,7 +71,7 @@
       items:
         - <b>Runner up (top three) for the best short paper</b> at the NeurIPS ENLSP workshop (with <i>How Redundant is the Transformer Stack in Speech Representation Models</i>).
   
-- title: Community Service
+- title: Other activities
   type: nested_list
   contents:
     - title: Reviewer, volunteering, etc.
