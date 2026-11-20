@@ -11,6 +11,8 @@ related_posts: true
 bibliography: noise_injection.bib
 paper_url: https://arxiv.org/pdf/2509.20201
 code_url: https://github.com/albertkjoller/geometric-ml/tree/main/staying-on-the-manifold
+og_image: https://albertkjoller.github.io/assets/img/noise_injection/manifold-og.jpg # link-preview image (Slack, X, LinkedIn)
+thumbnail: assets/img/noise_injection/manifold-thumbnail.jpg # image on the post's card in the notes list
 # see_also:
 #   - title: Loss Surfaces as Riemannian Manifolds
 #     url: /notes/2026/loss-geometry
@@ -27,6 +29,7 @@ toc:
       - name: Brownian motion noise
   - name: What if I do not know the shape of my data?
   - name: But does it improve generalization?
+  - name: Citation
 _styles: >
   details {
     margin: 1.2em 0;
@@ -110,9 +113,53 @@ _styles: >
     vertical-align: middle;
     margin: 0 0.15em;
   }
+  .keyidea {
+    margin: 1.4em 0;
+    padding: 0.8em 1.2em;
+    border-left: 3px solid var(--global-theme-color);
+    background: color-mix(in srgb, var(--global-theme-color) 7%, transparent);
+    border-radius: 0 4px 4px 0;
+  }
+  .keyidea-title {
+    font-size: 0.8em;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--global-theme-color);
+    margin-bottom: .3em;
+  }
+  /* Citation box: smaller text so each BibTeX field fits on its own line */
+  .keyidea pre, .keyidea pre code { font-size: 0.7rem; line-height: 1.5; }
+  .keyidea p:last-child {
+    margin-bottom: 0;
+  }
+  .keyidea table {
+    width: 100%;
+    font-size: 0.82em;
+    border-collapse: collapse;
+    margin: 0.2em 0 0 0;
+  }
+  .keyidea th,
+  .keyidea td {
+    text-align: left;
+    vertical-align: top;
+    padding: 0.3em 0.6em 0.3em 0;
+    border-bottom: 1px solid var(--global-divider-color);
+  }
+  .keyidea tr:last-child td {
+    border-bottom: none;
+  }
+  .keyidea th {
+    font-weight: 600;
+  }
+  .keyidea td:first-child {
+    white-space: nowrap;
+  }
 ---
 
-This post serves as a quick introduction to the main concepts covered in the paper *Staying on the Manifold: Geometry-Aware Noise Injection*<d-cite key="jacobsen2026staying"></d-cite>. If you like the topic and are interested in further details, I would recommend checking out the full paper.
+<script src="{{ '/assets/js/sphere-noise-widget.js' | relative_url | bust_file_cache }}" defer></script>
+
+<!-- This post serves as a quick introduction to the main concepts covered in the paper *Staying on the Manifold: Geometry-Aware Noise Injection*<d-cite key="jacobsen2026staying"></d-cite>. If you like the topic and are interested in further details, I would recommend checking out the full paper. -->
 
 {% include post_links.liquid %}
 
@@ -120,13 +167,17 @@ This post serves as a quick introduction to the main concepts covered in the pap
 
 When assessing the usefulness of a predictive model, one critical aspect is whether it can generalize to data that was not used during training of the model. A commonly known approach to improve generalization performance is through *data augmentation*, where the training data set $$\mathcal{D}=\{\boldsymbol{x}_n,y_n\}_{n=1}^{N}$$ is updated to contain additional, modified versions of selected training data points, e.g. $$\boldsymbol{x}_n \in \mathbb{R}^{D}$$, while the associated label $y_n$ remains fixed. There exist many augmentation mechanisms but they often take structural forms, such as rotations or translations of image data. Alternatively, augmentations can be random variations of training points. 
 
-This note covers an approach based on random variations of training data, while leveraging the structure of the data points themselves. Random variations of inputs is often referred to as *noise injection* on the inputs, and back in 1995 Bishop<d-cite key="bishop1995training"></d-cite> showed that training with noise injection is (in expectation) equivalent to training a regularized model with beneficial generalization properties. Bishop's work considered a very simple noise injection scheme, namely that of adding isotropic Gaussian noise to selected inputs:
+This note covers an approach based on random variations of training data<d-cite key="jacobsen2026staying"></d-cite>, while leveraging the structure of the data points themselves. Random variations of inputs is often referred to as *noise injection* on the inputs, and back in 1995 Bishop<d-cite key="bishop1995training"></d-cite> showed that training with noise injection is (in expectation) equivalent to training a regularized model with beneficial generalization properties. Bishop's work considered a very simple noise injection scheme, namely that of adding isotropic Gaussian noise to selected inputs:
 
 $$
   \tilde{\boldsymbol{x}} = \boldsymbol{x} + \boldsymbol{\epsilon}, \qquad \boldsymbol{\epsilon} \sim \mathcal{N}(\boldsymbol{0}, \sigma^2 \mathbb{I}_D)
 $$
 
 Though this approach is simple, it has a major limitation if the data is structured: we risk violating the true structure of the data when generating augmented data. We will refer to the structure of the data as the *data manifold* which is a lower-dimensional object in the $D$-dimensional *input space* $\mathbb{R}^D$, and according to the manifold hypothesis, such manifolds tend to form for high-dimensional data. 
+
+<aside>
+<strong>A known shape.</strong> The round Earth is a case where we can write the manifold down in closed form. When we cannot, we will later approximate it with an autoencoder instead.
+</aside>
 
 In specific cases, we might be able to characterize the manifold exactly or an approximation of it. As an example, assume that the Earth is perfectly round, in which case we can model observations on the Earth as lying on a sphere. In Figure 1 we show the effect of adding "ordinary" (meaning Gaussian) noise to a data point lying on the sphere. The augmented sample is pushed away from the manifold, making it clear that Gaussian input noise does not respect the geometry of the data.
 
@@ -353,6 +404,30 @@ ambient_traj, param_traj = manifold.brownian_motion(
 ```
 </details>
 
+To get a feel for how the four strategies differ, Figure 7 lets you draw samples with each of them from the same data point on the sphere, and shows where they land in the parameter space of the chart $X$.
+
+<div class="sphere-noise-widget l-page"></div>
+<div class="caption">
+    <span class="fig-num">Figure 7.</span><span>Try all four. Drag to rotate the sphere and click on it to move the data point $\boldsymbol{x}$ (<span class="mark-dot" style="background:#2F4F4F;"></span>). Ambient noise (<span class="mark-dot" style="background:#C0272D;"></span>) leaves the sphere, tangential noise (<span class="mark-dot" style="background:#E39B3A;"></span>) lands on the tangent plane at $\boldsymbol{x}$, geodesic noise (<span class="mark-dot" style="background:#3C7A3C;"></span>) follows a great circle and lands on the sphere, and Brownian motion (<span class="mark-dot" style="background:#3B6FA0;"></span>) takes many small random steps on the sphere. "All four" builds one sample per method from the same Gaussian draw $\boldsymbol{\epsilon}$. New geodesic samples travel along their great circle, and new Brownian samples walk there step by step. The slider sets $\sigma$, and Brownian motion runs for time $T=\sigma^2$ so its spread matches. Samples behind the sphere are drawn faded. The panel shows the same samples in the parameter space $(u_1,u_2)$ through $X^{-1}$; it does not change when you rotate the sphere. Ambient and tangential samples do not lie on the sphere, so they have no coordinates and appear only on the sphere. Paths that cross $u_2=0$ continue from the opposite edge, and near the poles, where $u_2$ is undefined, small steps on the sphere become large jumps in $u_2$. For speed, this demo uses the sphere's closed-form geometry (great circles and renormalized steps) instead of solving the geodesic and Brownian equations in the parameter space.</span>
+</div>
+
+<div class="keyidea" markdown="1">
+<div class="keyidea-title">The four noise types at a glance</div>
+
+<table>
+  <thead>
+    <tr><th>Noise</th><th>Stays on the manifold?</th><th>Needs</th><th>Cost</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="mark-dot" style="background:#C0272D;"></span> Ambient</td><td>No, pushed off it</td><td>Nothing beyond $\sigma$</td><td>Lowest</td></tr>
+    <tr><td><span class="mark-dot" style="background:#E39B3A;"></span> Tangential</td><td>Close, but exact only at $\boldsymbol{x}$</td><td>Jacobian $\mathbf{J}_X$ (projection $\mathbf{P}$)</td><td>Low</td></tr>
+    <tr><td><span class="mark-dot" style="background:#3C7A3C;"></span> Geodesic</td><td>Yes, by construction</td><td>Metric $g$, Christoffel symbols, an ODE (IVP) solver</td><td>Higher</td></tr>
+    <tr><td><span class="mark-dot" style="background:#3B6FA0;"></span> Brownian</td><td>Yes, the whole path</td><td>Metric $g$ (inverse and derivatives), an SDE solver with many small steps</td><td>Higher</td></tr>
+  </tbody>
+</table>
+
+</div>
+
 
 ## What if I do not know the shape of my data?
 
@@ -364,20 +439,24 @@ $$
   \arg \min_{\boldsymbol{\theta}} \frac{1}{N} \sum_{n=1}^N (\boldsymbol{x}_n - f_d(f_e(\boldsymbol{x}_n)))^2
 $$
 
+<aside>
+<strong>Dictionary.</strong> Chart $X$ = decoder $f_d$, inverse chart $X^{-1}$ = encoder $f_e$, parameter space $\mathcal{U}$ = latent space $\mathcal{Z}$. The autoencoder's weights $\boldsymbol{\theta}$ play no role in the geometry.
+</aside>
+
 Once trained, the decoder $f_d$ itself plays the role of the chart $X$ from before, and the parameter space coordinate is instead the latent code $\boldsymbol{z} = f_e(\boldsymbol{x}) \in \mathcal{Z} \subseteq \mathbb{R}^d$, so that a reconstruction is given by $\tilde{\boldsymbol{x}} = f_d(\boldsymbol{z})$. Remark our use of the term *parameter space*, since the *weight space* $\Theta$ would often be referred to as the parameter space of the autoencoder, however we use it to describe the parameter space of the learned data manifold $\mathcal{Z}$.
 
-For a learned data manifold with the chart $X:=f_e(\cdot)$ and approximate inverse $X^{-1}:=f_d(\cdot)$, we do not need further adjustments to define the three geometry-aware noise injection strategies considered previously: all we need is the Jacobian of the decoder $$\mathbf{J}_{f_d}(\boldsymbol{z})$$ which gives $$g_{f_d}(\boldsymbol{z}) = \mathbf{J}_{f_d}(\boldsymbol{z})^\top \mathbf{J}_{f_d}(\boldsymbol{z})$$. Though the metric does not have a closed form when $f_d$ is parameterized by a neural network, we can efficiently evaluate it using *automatic differentiation*.
+For a learned data manifold with the chart $X:=f_d(\cdot)$ and approximate inverse $X^{-1}:=f_e(\cdot)$, we do not need further adjustments to define the three geometry-aware noise injection strategies considered previously: all we need is the Jacobian of the decoder $$\mathbf{J}_{f_d}(\boldsymbol{z})$$ which gives $$g_{f_d}(\boldsymbol{z}) = \mathbf{J}_{f_d}(\boldsymbol{z})^\top \mathbf{J}_{f_d}(\boldsymbol{z})$$. Though the metric does not have a closed form when $f_d$ is parameterized by a neural network, we can efficiently evaluate it using *automatic differentiation*.
 
 As an example, we train an autoencoder and run four different Brownian motions from the exact same input sample of the digit "0". In addition we also consider Brownian motion in the ambient space, which at time $T$ corresponds to adding Gaussian noise with spread $\sqrt{T}$ to the input, i.e. the original approach considered by Bishop. The effect is clear: even though the parameterization only approximates the data manifold, the geometry-aware perturbations are visually meaningful perturbations of the original input digit. In contrast, ambient Brownian motion destroys the input signal as time increases.
 
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/noise_injection/mnist_noise_animation.gif" title="Brownian motion evoluation over time on a learned MNIST manifold" class="img-fluid" avoid_scaling=true %}
+        {% include figure.liquid path="assets/img/noise_injection/mnist_noise_animation.gif" title="Brownian motion evolution over time on a learned MNIST manifold" class="img-fluid blend-bg" avoid_scaling=true %}
     </div>
 </div>
 <div class="caption">
-    <span class="fig-num">Figure 7.</span><span>Brownian motion on MNIST, simulated in the autoencoder's latent space $\mathcal{Z}$ and mapped to image space through the decoder $f_d$. This parameterizes the (approximated) data manifold.</span>
+    <span class="fig-num">Figure 8.</span><span>Brownian motion on MNIST, simulated in the autoencoder's latent space $\mathcal{Z}$ and mapped to image space through the decoder $f_d$. This parameterizes the (approximated) data manifold.</span>
 </div>
 
 
@@ -388,7 +467,26 @@ Yes indeed, and we also have theory on this! You can find results in the [full p
 If you want to try it out yourself, we provide the example code for MNIST in [an associated notebook](https://github.com/albertkjoller/geometric-ml/blob/main/staying-on-the-manifold/mnist.ipynb). Future research directions could consider more advanced approximations of the data manifold, e.g. using generative models.
 
 
+## Citation
 
+<div class="keyidea" markdown="1">
+<div class="keyidea-title">Cite this work</div>
+
+If you found this post useful, please cite the paper:
+
+```bibtex
+@inproceedings{jacobsen2026staying,
+  title={Staying on the Manifold: Geometry-Aware Noise Injection},
+  author={Jacobsen, Albert Kj{\o}ller and Gegenfurtner, Johanna Marie and Arvanitidis, Georgios},
+  booktitle={Proceedings of the 7th Northern Lights Deep Learning Conference (NLDL)},
+  series={Proceedings of Machine Learning Research},
+  volume={307},
+  year={2026},
+  url={https://arxiv.org/abs/2509.20201}
+}
+```
+
+</div>
 
 
 {% include see_also.liquid %}

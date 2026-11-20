@@ -420,6 +420,29 @@ footer.fixed-bottom {
   display: none;
 }
 
+// ─── Slim footer (footer_fixed: false) ───────────────────────────────────────
+// A quiet line at the very end of each page: copyright + privacy link.
+
+footer.sticky-bottom {
+  padding-top: 1.1rem;
+  padding-bottom: 1.1rem;
+  margin-top: 4rem !important;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.01em;
+  color: var(--global-text-color-light);
+
+  a {
+    color: var(--global-text-color-light);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover {
+      color: var(--global-theme-color);
+    }
+  }
+}
+
 body {
   padding-bottom: 80px;
 }
@@ -756,4 +779,79 @@ table.table a {
 
 .navbar.navbar-light .navbar-nav .nav-item.active > .nav-link {
   color: var(--global-theme-color) !important;
+}
+
+// ─── Blend media into page background ────────────────────────────────────────
+// For figures/videos rendered on a pure-white background (e.g. matplotlib).
+// Light mode: multiply makes white take on the page color.
+// Dark mode: invert (hue-rotated back so colors keep their hue) turns the white
+// background black, and screen makes black take on the page color.
+
+// Distill's d-article sets `contain: layout style`, which isolates blending to
+// the article itself — so it needs an opaque page-colored background.
+d-article {
+  background-color: var(--global-bg-color);
+}
+
+.blend-bg {
+  mix-blend-mode: multiply;
+}
+
+html[data-theme="dark"] .blend-bg {
+  filter: invert(1) hue-rotate(180deg);
+  mix-blend-mode: screen;
+}
+
+// Distill also sets `contain: layout style` on <figure>, isolating blending to
+// the figure — give it the page color too. Also tighten distill's default
+// figure margins (1.5em / 2.5em) for blended media.
+figure:has(> .blend-bg) {
+  background-color: var(--global-bg-color);
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+// Small caps, like LaTeX's \textsc — e.g. <span class="textsc">DiMS</span>
+// renders as D, small-capital I, M, S.
+.textsc {
+  font-variant: small-caps;
+}
+
+// Captions sit close to the figure they describe (videos in a .row, and interactive widgets).
+.row + .caption,
+.dims-widget + .caption {
+  margin-top: 0.3rem;
+}
+
+// Optional post thumbnail at the top of a notes card (front matter: `thumbnail: assets/img/...`).
+// Full-bleed: the negative margins cancel the card padding.
+.note-card-thumb {
+  display: block;
+  margin: -1.4rem -1.6rem 1rem;
+  height: 160px;
+  overflow: hidden;
+  border-radius: 10px 10px 0 0;
+  border-bottom: 1px solid var(--global-divider-color);
+  background-color: #fff;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+}
+// Figures are plotted on white: invert in dark mode, as for .blend-bg videos.
+html[data-theme="dark"] .note-card-thumb {
+  background-color: #000;
+
+  img {
+    filter: invert(1) hue-rotate(180deg);
+  }
+}
+
+// Distill margin notes (<aside>): distill hard-codes black text, which disappears in dark mode.
+d-article aside {
+  color: var(--global-text-color-light);
 }

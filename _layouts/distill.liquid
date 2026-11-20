@@ -41,7 +41,12 @@
               {% endfor %}
             ],
             "katex": {
-              "delimiters": [
+              {% comment %}
+                Distill's KaTeX and MathJax (enable_math) both try to render $…$ and race each other.
+                Front matter `math_engine: mathjax` hands all math to MathJax (supports \begin{equation},
+                \label, \eqref); otherwise distill's KaTeX renders $ and $$ as before.
+              {% endcomment %}
+              "delimiters": [{% if page.math_engine == 'mathjax' %}]{% else %}
                 {
                   "left": "$",
                   "right": "$",
@@ -52,7 +57,7 @@
                   "right": "$$",
                   "display": true
                 }
-              ]
+              ]{% endif %}
             }
           }
     </script>

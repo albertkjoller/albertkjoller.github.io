@@ -59,6 +59,11 @@ pagination:
   {% if read_time == 0 %}{% assign read_time = 1 %}{% endif %}
   <article class="note-card note-card--featured">
     <div class="note-card-pin"><i class="fa-solid fa-thumbtack fa-xs"></i></div>
+    {% if post.thumbnail %}
+    <a href="{{ post.url | relative_url }}" class="note-card-thumb" tabindex="-1" aria-hidden="true">
+      <img src="{{ post.thumbnail | relative_url }}" alt="" loading="lazy">
+    </a>
+    {% endif %}
     <div class="note-card-badges">
       {% if post.level %}<span class="note-level note-level--{{ post.level | downcase | replace: ' ', '-' }}">{{ post.level }}</span>{% endif %}
       {% for category in post.categories %}<span class="note-category">{{ category }}</span>{% endfor %}
@@ -97,6 +102,11 @@ pagination:
   {% assign categories = post.categories | join: "" %}
 
   <article class="note-card">
+    {% if post.thumbnail %}
+    <a href="{{ post.url | relative_url }}" class="note-card-thumb" tabindex="-1" aria-hidden="true">
+      <img src="{{ post.thumbnail | relative_url }}" alt="" loading="lazy">
+    </a>
+    {% endif %}
     <div class="note-card-badges">
       {% if post.level %}<span class="note-level note-level--{{ post.level | downcase | replace: ' ', '-' }}">{{ post.level }}</span>{% endif %}
       {% for category in post.categories %}<span class="note-category">{{ category }}</span>{% endfor %}
