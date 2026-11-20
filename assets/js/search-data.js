@@ -45,7 +45,7 @@ ninja.data = [{
         section: "Posts",
         handler: () => {
           
-            window.location.href = "/notes/2026/input_noise/";
+            window.location.href = "/notes/2026/staying-on-the-manifold/";
           
         },
       },{id: "news-my-personal-webpage-is-online-looking-forward-to-share-my-academic-progress-here",
