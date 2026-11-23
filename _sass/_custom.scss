@@ -214,7 +214,7 @@ body:has(.hero-header) {
   --page-figure-color: #d9642e;
 }
 html[data-theme="dark"] {
-  --page-figure-color: #e07a45;
+  --page-figure-color: var(--global-theme-color); // dark mode: the site's own accent color
 }
 
 // Text centred in the first screen, inside the ring's top arc

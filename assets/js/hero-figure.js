@@ -231,22 +231,43 @@
   const px = (u, v) => [u * W, v * H];
 
   // ─── Density layer ─────────────────────────────────────────────────────────
-  function drawBase() {
-    xBase.clearRect(0, 0, W, H);
+  // The geometry (density grid, contour segments, masks) depends only on the layout, so it is computed
+  // once per size and cached; a theme switch only repaints it in the new color.
+  let geo = null;
+
+  // Marching squares on a grid F (gw × gh points, spacing n) → flat segment list [x0, y0, x1, y1, ...]
+  function isoSegments(F, gw, gh, n, L, out) {
+    for (let j = 0; j < gh - 1; j++)
+      for (let i = 0; i < gw - 1; i++) {
+        const v0 = F[j * gw + i],
+          v1 = F[j * gw + i + 1],
+          v2 = F[(j + 1) * gw + i + 1],
+          v3 = F[(j + 1) * gw + i];
+        const b0 = v0 < L,
+          b1 = v1 < L,
+          b2 = v2 < L,
+          b3 = v3 < L;
+        if (b0 === b1 && b1 === b2 && b2 === b3) continue;
+        const x = i * n,
+          y = j * n;
+        const pts = [];
+        if (b0 !== b1) pts.push(x + ((L - v0) / (v1 - v0)) * n, y);
+        if (b1 !== b2) pts.push(x + n, y + ((L - v1) / (v2 - v1)) * n);
+        if (b2 !== b3) pts.push(x + n - ((L - v2) / (v3 - v2)) * n, y + n);
+        if (b3 !== b0) pts.push(x, y + n - ((L - v3) / (v0 - v3)) * n);
+        for (let q = 0; q + 3 < pts.length; q += 4) out.push(pts[q], pts[q + 1], pts[q + 2], pts[q + 3]);
+      }
+    return out;
+  }
+
+  function buildGeometry() {
+    // 1) Band density on a fine grid, by splatting each kernel onto the cells near it
     const n = 5;
-    const gw = Math.ceil(W / n),
-      gh = Math.ceil(H / n);
-    const g = document.createElement("canvas");
-    g.width = gw;
-    g.height = gh;
-    const gx = g.getContext("2d");
-    const img = gx.createImageData(gw, gh);
-    // Density on the grid, by splatting each kernel onto the cells near it
-    const GW = gw + 1,
-      GH = gh + 1;
+    const GW = Math.ceil(W / n) + 1,
+      GH = Math.ceil(H / n) + 1;
     const f = new Float32Array(GW * GH);
     for (const [kx, ky, sg, w] of kernels) {
-      const R = 4.5 * sg;
+      const R = 4 * sg;
       const i0 = Math.max(0, Math.floor((kx - R) / n)),
         i1 = Math.min(GW - 1, Math.ceil((kx + R) / n));
       const j0 = Math.max(0, Math.floor((ky - R) / n)),
@@ -261,96 +282,118 @@
       }
     }
     let fMax = 0;
-    for (let q = 0; q < f.length; q++) fMax = Math.max(fMax, f[q]);
+    for (let q = 0; q < f.length; q++) if (f[q] > fMax) fMax = f[q];
     for (let q = 0; q < f.length; q++) f[q] /= fMax || 1; // contour levels are fractions of the peak
+    const bandSegs = P.levels.map((L) => isoSegments(f, GW, GH, n, L, []));
+
+    // 2) Background field on a coarse grid: a heavily smoothed version of the density (log-sum-exp over
+    //    a subset of kernels, one pass), turned into a smooth "distance", minus the hills
+    const m = 12;
+    const gw = Math.ceil(W / m) + 1,
+      gh = Math.ceil(H / m) + 1;
+    const Sg = sigma * P.bgSmooth,
+      c = 1 / (2 * Sg * Sg);
+    const step = Math.max(1, Math.round(kernels.length / 120));
+    const ks = kernels.filter((_, i) => i % step === 0);
+    const F = new Float32Array(gw * gh);
+    let Lmin = Infinity;
+    for (let j = 0; j < gh; j++)
+      for (let i = 0; i < gw; i++) {
+        const x = i * m,
+          y = j * m;
+        let mm = Infinity,
+          sum = 0;
+        for (const k of ks) {
+          const e = ((x - k[0]) ** 2 + (y - k[1]) ** 2) * c;
+          if (e < mm) {
+            sum = sum * Math.exp(e - mm) + 1; // streaming log-sum-exp
+            mm = e;
+          } else sum += Math.exp(mm - e);
+        }
+        const L = mm - Math.log(sum);
+        F[j * gw + i] = L;
+        if (L < Lmin) Lmin = L;
+      }
+    let lo = Infinity,
+      hi = -Infinity;
+    for (let j = 0; j < gh; j++)
+      for (let i = 0; i < gw; i++) {
+        let v = Math.sqrt(2 * (F[j * gw + i] - Lmin)) * Sg;
+        for (const [hx, hy, hr, hd] of P.hills) {
+          const dx = i * m - hx * W,
+            dy = j * m - hy * H;
+          v -= hd * Math.exp(-(dx * dx + dy * dy) / (2 * hr * hr));
+        }
+        F[j * gw + i] = v;
+        if (v < lo) lo = v;
+        if (v > hi) hi = v;
+      }
+    const bgSegs = [];
+    for (let Lv = Math.ceil((lo + 1) / P.bgSpacing) * P.bgSpacing + P.bgSpacing * 0.5; Lv < hi; Lv += P.bgSpacing)
+      isoSegments(F, gw, gh, m, Lv, bgSegs);
+
+    // 3) Mask for the background lines: fade out smoothly over the band
+    const bw = GW - 1,
+      bh = GH - 1;
+    const mask = document.createElement("canvas");
+    mask.width = bw;
+    mask.height = bh;
+    const mx = mask.getContext("2d");
+    const img = mx.createImageData(bw, bh);
+    for (let j = 0; j < bh; j++)
+      for (let i = 0; i < bw; i++) {
+        const t = Math.min(1, Math.max(0, (f[j * GW + i] - 0.004) / 0.06));
+        img.data[4 * (j * bw + i) + 3] = Math.round(255 * t * t * (3 - 2 * t)); // smoothstep
+      }
+    mx.putImageData(img, 0, 0);
+
+    // ... and around the name and tagline
+    const fr = fig.getBoundingClientRect();
+    const textBoxes = [...document.querySelectorAll(".hero-text")].map((el) => {
+      const r = el.getBoundingClientRect();
+      return [r.left - fr.left - 30, r.top - fr.top - 20, r.width + 60, r.height + 40];
+    });
+    return { n, GW, GH, f, bandSegs, bgSegs, mask, textBoxes };
+  }
+
+  function stroke(ctx, segs) {
+    ctx.beginPath();
+    for (let q = 0; q < segs.length; q += 4) {
+      ctx.moveTo(segs[q], segs[q + 1]);
+      ctx.lineTo(segs[q + 2], segs[q + 3]);
+    }
+    ctx.stroke();
+  }
+
+  function drawBase() {
+    const { n, GW, GH, f, bandSegs, bgSegs, mask, textBoxes } = geo;
+    xBase.clearRect(0, 0, W, H);
+    // Glow
+    const gw = GW - 1,
+      gh = GH - 1;
+    const g = document.createElement("canvas");
+    g.width = gw;
+    g.height = gh;
+    const gx = g.getContext("2d");
+    const img = gx.createImageData(gw, gh);
     for (let j = 0; j < gh; j++)
       for (let i = 0; i < gw; i++) {
         const k = 4 * (j * gw + i);
         img.data[k] = col[0];
         img.data[k + 1] = col[1];
         img.data[k + 2] = col[2];
-        img.data[k + 3] = Math.round(255 * 0.13 * Math.sqrt(f[j * (gw + 1) + i]));
+        img.data[k + 3] = Math.round(255 * 0.13 * Math.sqrt(f[j * GW + i]));
       }
     gx.putImageData(img, 0, 0);
     xBase.imageSmoothingEnabled = true;
     xBase.drawImage(g, 0, 0, gw * n, gh * n);
-    // Level sets (marching squares on the same grid)
-    P.levels.forEach((L, li) => {
-      xBase.strokeStyle = rgba(0.12 + 0.2 * (li / (P.levels.length - 1)));
-      xBase.lineWidth = 1;
-      xBase.beginPath();
-      for (let j = 0; j < gh; j++)
-        for (let i = 0; i < gw; i++) {
-          const v = [f[j * (gw + 1) + i], f[j * (gw + 1) + i + 1], f[(j + 1) * (gw + 1) + i + 1], f[(j + 1) * (gw + 1) + i]];
-          if ((v[0] < L) === (v[1] < L) && (v[1] < L) === (v[2] < L) && (v[2] < L) === (v[3] < L)) continue;
-          const c = [
-            [i * n, j * n],
-            [(i + 1) * n, j * n],
-            [(i + 1) * n, (j + 1) * n],
-            [i * n, (j + 1) * n],
-          ];
-          const pts = [];
-          for (let e = 0; e < 4; e++) {
-            const e2 = (e + 1) % 4;
-            if (v[e] < L !== v[e2] < L) {
-              const t = (L - v[e]) / (v[e2] - v[e]);
-              pts.push([c[e][0] + t * (c[e2][0] - c[e][0]), c[e][1] + t * (c[e2][1] - c[e][1])]);
-            }
-          }
-          for (let q = 0; q + 1 < pts.length; q += 2) {
-            xBase.moveTo(pts[q][0], pts[q][1]);
-            xBase.lineTo(pts[q + 1][0], pts[q + 1][1]);
-          }
-        }
-      xBase.stroke();
+    // The band's level sets
+    xBase.lineWidth = 1;
+    bandSegs.forEach((segs, li) => {
+      xBase.strokeStyle = rgba(0.12 + 0.2 * (li / (bandSegs.length - 1 || 1)));
+      stroke(xBase, segs);
     });
-    drawBackgroundLines(f, GW, n);
-  }
-
-  // Faint, evenly spaced contour lines over the whole page: level sets of a heavily smoothed version of
-  // the density (each kernel bgSmooth× wider), at equal steps of the "distance" √(2·L)·σ_bg.
-  function drawBackgroundLines(band, bandGW, bandN) {
-    const n = 6;
-    const gw = Math.ceil(W / n) + 1,
-      gh = Math.ceil(H / n) + 1;
-    const Sg = sigma * P.bgSmooth,
-      c = 1 / (2 * Sg * Sg);
-    const step = Math.max(1, Math.round(kernels.length / 260)); // a subset of kernels is plenty when smoothed
-    const ks = kernels.filter((_, i) => i % step === 0);
-    const F = new Float32Array(gw * gh);
-    for (let j = 0; j < gh; j++)
-      for (let i = 0; i < gw; i++) {
-        const x = i * n,
-          y = j * n;
-        let m = Infinity;
-        for (const k of ks) {
-          const r2 = (x - k[0]) ** 2 + (y - k[1]) ** 2;
-          if (r2 < m) m = r2;
-        }
-        let sum = 0;
-        for (const k of ks) sum += Math.exp(-((x - k[0]) ** 2 + (y - k[1]) ** 2 - m) * c);
-        F[j * gw + i] = m * c - Math.log(sum); // −log of the smoothed density (up to a constant), log-sum-exp
-      }
-    // ≈ distance to the curve, but smooth (shifted by the minimum, so no clamping), minus the hills
-    let Lmin = Infinity;
-    for (const v of F) Lmin = Math.min(Lmin, v);
-    for (let j = 0; j < gh; j++)
-      for (let i = 0; i < gw; i++) {
-        let v = Math.sqrt(2 * (F[j * gw + i] - Lmin)) * Sg;
-        for (const [hx, hy, hr, hd] of P.hills) {
-          const dx = i * n - hx * W,
-            dy = j * n - hy * H;
-          v -= hd * Math.exp(-(dx * dx + dy * dy) / (2 * hr * hr));
-        }
-        F[j * gw + i] = v;
-      }
-    let lo = Infinity,
-      hi = 0;
-    for (const v of F) {
-      lo = Math.min(lo, v);
-      hi = Math.max(hi, v);
-    }
-    // Draw the lines on their own layer, then fade them out softly over the band and around the name
+    // Background lines on their own layer, faded out over the band and around the name
     const lay = document.createElement("canvas");
     lay.width = Math.round(W * dpr);
     lay.height = Math.round(H * dpr);
@@ -358,60 +401,14 @@
     lx.setTransform(dpr, 0, 0, dpr, 0, 0);
     lx.strokeStyle = rgba(0.13);
     lx.lineWidth = 1;
-    lx.beginPath();
-    for (let Lv = Math.ceil((lo + 1) / P.bgSpacing) * P.bgSpacing + P.bgSpacing * 0.5; Lv < hi; Lv += P.bgSpacing)
-      for (let j = 0; j < gh - 1; j++)
-        for (let i = 0; i < gw - 1; i++) {
-          const v = [F[j * gw + i], F[j * gw + i + 1], F[(j + 1) * gw + i + 1], F[(j + 1) * gw + i]];
-          const below = v.map((t) => t < Lv);
-          if (below[0] === below[1] && below[1] === below[2] && below[2] === below[3]) continue;
-          const cpts = [
-            [i * n, j * n],
-            [(i + 1) * n, j * n],
-            [(i + 1) * n, (j + 1) * n],
-            [i * n, (j + 1) * n],
-          ];
-          const pts = [];
-          for (let e = 0; e < 4; e++) {
-            const e2 = (e + 1) % 4;
-            if (below[e] !== below[e2]) {
-              const t = (Lv - v[e]) / (v[e2] - v[e]);
-              pts.push([cpts[e][0] + t * (cpts[e2][0] - cpts[e][0]), cpts[e][1] + t * (cpts[e2][1] - cpts[e][1])]);
-            }
-          }
-          for (let q = 0; q + 1 < pts.length; q += 2) {
-            lx.moveTo(pts[q][0], pts[q][1]);
-            lx.lineTo(pts[q + 1][0], pts[q + 1][1]);
-          }
-        }
-    lx.stroke();
-    // Mask 1: the band (alpha rises smoothly with the band's density)
-    const bw = bandGW - 1,
-      bh = Math.round(band.length / bandGW) - 1;
-    const m = document.createElement("canvas");
-    m.width = bw;
-    m.height = bh;
-    const mx = m.getContext("2d");
-    const img = mx.createImageData(bw, bh);
-    for (let j = 0; j < bh; j++)
-      for (let i = 0; i < bw; i++) {
-        const t = Math.min(1, Math.max(0, (band[j * bandGW + i] - 0.004) / 0.06));
-        img.data[4 * (j * bw + i) + 3] = Math.round(255 * t * t * (3 - 2 * t)); // smoothstep
-      }
-    mx.putImageData(img, 0, 0);
-    lx.save();
+    lx.lineJoin = "round";
+    stroke(lx, bgSegs);
     lx.globalCompositeOperation = "destination-out";
     lx.imageSmoothingEnabled = true;
-    lx.drawImage(m, 0, 0, bw * bandN, bh * bandN);
-    // Mask 2: a soft clearing around the name and tagline
-    const fr = fig.getBoundingClientRect();
+    lx.drawImage(mask, 0, 0, gw * n, gh * n);
     lx.filter = "blur(28px)";
     lx.fillStyle = "#000";
-    for (const el of document.querySelectorAll(".hero-text")) {
-      const r = el.getBoundingClientRect();
-      lx.fillRect(r.left - fr.left - 30, r.top - fr.top - 20, r.width + 60, r.height + 40);
-    }
-    lx.restore();
+    for (const [x, y, w, h] of textBoxes) lx.fillRect(x, y, w, h);
     xBase.save();
     xBase.setTransform(1, 0, 0, 1, 0, 0);
     xBase.drawImage(lay, 0, 0);
@@ -535,17 +532,23 @@
   }
 
   // ─── Lifecycle ─────────────────────────────────────────────────────────────
+  // New size: recompute the geometry, then repaint
   function rebuild() {
     const before = cur ? norm(x, y) : null;
     if (!layout()) return false;
     if (before) [x, y] = px(...before);
+    geo = buildGeometry();
+    repaint();
+    return true;
+  }
+  // Same size, new colors (theme switch): repaint only
+  function repaint() {
     drawBase();
     redrawInk();
     inkStyle();
     xHead.clearRect(0, 0, W, H);
     dirty = null;
     if (cur) drawHead();
-    return true;
   }
 
   const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -582,7 +585,7 @@
 
   new MutationObserver(() => {
     readColors();
-    rebuild();
+    if (geo) repaint();
   }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
   // The page grows as fonts/images/news load, and on window resizes: re-fit the ring
   let rt,
@@ -592,7 +595,7 @@
     if (key === lastSize) return;
     lastSize = key;
     clearTimeout(rt);
-    rt = setTimeout(rebuild, 150);
+    rt = setTimeout(rebuild, 250);
   }).observe(fig);
   new IntersectionObserver((e) => {
     visible = e[0].isIntersecting;

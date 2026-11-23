@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-I finally managed to write [my first blogpost note](https://albertkjoller.github.io/notes/2026/input_noise/) -- I'm happy to get feedback on the writing style, etc. if you have any thoughts!
+I finally managed to write [my first blogpost note](https://albertkjoller.github.io/notes/2026/staying-on-the-manifold/) -- I'm happy to get feedback on the writing style, etc. if you have any thoughts!
