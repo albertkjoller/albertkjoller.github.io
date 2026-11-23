@@ -2,10 +2,15 @@
 layout: default
 ---
 <div class="post">
+  <!-- A ring-shaped density wrapping around the whole page; one particle at a time diffuses in the
+       pullback metric of its loss and slowly fills it in (assets/js/hero-figure.js) -->
+  <div class="page-figure" aria-hidden="true">
+    <canvas class="pf-base"></canvas><canvas class="pf-ink"></canvas><canvas class="pf-head"></canvas>
+  </div>
   <div class="above-the-fold">
     <header class="post-header hero-header">
-      {% include distribution-band.liquid class="hero-band" %}
       <div class="hero-text">
+        {% if page.hero_label %}<p class="hero-label">{{ page.hero_label }}</p>{% endif %}
         <h1 class="post-title">
           {% if site.title == 'blank' %}
             <span class="font-weight-bold">{{ site.first_name }}</span> {{ site.middle_name }}
@@ -14,11 +19,12 @@ layout: default
             {{ site.title }}
           {% endif %}
         </h1>
-        <p class="desc">{{ page.subtitle }}</p>
+        <p class="hero-tagline">{{ page.tagline | default: page.subtitle }}</p>
       </div>
     </header>
+    <script src="{{ '/assets/js/hero-figure.js' | relative_url | bust_file_cache }}" defer></script>
 
-    <article>
+    <article id="bio">
       {% if page.profile %}
         <div class="profile float-{% if page.profile.align == 'left' %}left{% else %}right{% endif %}">
           {% if page.profile.image %}
@@ -45,7 +51,7 @@ layout: default
       <div class="clearfix">{{ content }}</div>
     </article>
 
-    <a href="#news" class="scroll-hint" aria-label="Scroll to news">
+    <a href="#bio" class="scroll-hint" aria-label="Scroll to about">
       <i class="fa-solid fa-chevron-down"></i>
     </a>
     <script>
@@ -68,10 +74,10 @@ layout: default
       {% include news.liquid limit=true %}
     {% endif %}
 
-    <!-- Latest posts -->
+    <!-- Notes -->
     {% if page.latest_posts and page.latest_posts.enabled %}
       <h2>
-        <a href="{{ '/blog/' | relative_url }}" style="color: inherit">latest posts</a>
+        <a href="{{ '/blog/' | relative_url }}" style="color: inherit">notes</a>
       </h2>
       {% include latest_posts.liquid %}
     {% endif %}

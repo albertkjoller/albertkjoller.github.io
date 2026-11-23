@@ -2,12 +2,15 @@
 layout: about
 title: about
 permalink: /
-subtitle: DDSA PhD Fellow | Geometric Approximate Bayesian Inference 
+subtitle: DDSA PhD Fellow | Geometric Approximate Bayesian Inference
+hero_label: DDSA PhD Fellow · DTU Compute
+description: PhD Fellow at DTU Compute researching how to use geometry when quantifying uncertainty in deep learning.
+tagline: Differential geometry for uncertainty in deep learning.
 
 profile:
   align: right
   image: albertkjoller.png
-  image_circular: false # crops the image to make it circular
+  image_circular: true # crops the image to make it circular
   # more_info: >
   #   <p><sub>Section for Cognitive Systems</sub></p>
   #   <p><sub>Dept. of Applied Mathematics and Computer Science</sub></p>
@@ -19,7 +22,7 @@ social: true # includes social icons at the bottom of the page
 announcements:
   enabled: true # includes a list of news items
   scrollable: true # adds a vertical scroll bar if there are more than 3 news items
-  limit: 5 # leave blank to include all the news in the `_news` folder
+  limit:  # leave blank to include all the news in the `_news` folder
 
 latest_posts:
   enabled: false

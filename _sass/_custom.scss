@@ -103,13 +103,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 // ─── About page: above-the-fold ──────────────────────────────────────────────
-// Hero + bio are held to at least one full viewport tall, so "news" (and
-// everything after it) starts no earlier than one screen-length down.
+// The hero (name + subtitle + density backdrop) fills the whole first screen
+// on its own; the bio and photo follow when scrolling down, then "news".
 
 .above-the-fold {
   position: relative;
-  min-height: 100vh;
-  min-height: 100dvh;
 }
 
 // Subtle hint that there's more below the fold — small, muted, gently
@@ -150,21 +148,23 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-// Give the bio text more breathing room below the hero, rather than
-// crowding right up against it.
-.above-the-fold .clearfix {
-  margin-top: 1.75rem;
-}
-
-// Fixed navbar covers the top of the viewport, so an anchor jump to #news
-// needs breathing room or the heading lands hidden underneath it.
+// Fixed navbar covers the top of the viewport, so an anchor jump to #bio or
+// #news needs breathing room or the target lands hidden underneath it.
+#bio,
 #news {
   scroll-margin-top: 5rem;
 }
 
 // ─── About page: hero ─────────────────────────────────────────────────────────
-// Name and subtitle centered, with the distribution band (below) sitting
-// behind them as a quiet backdrop rather than a competing side element.
+// First screen: a curved density arching across the full width of the screen
+// (assets/js/hero-figure.js), with the name centred underneath the arch, then
+// a one-line tagline and a small affiliation line.
+
+// The figure is full-bleed (wider than the content column): clip, not hidden,
+// so nothing scrolls sideways and position: sticky elsewhere keeps working.
+body:has(.hero-header) {
+  overflow-x: clip;
+}
 
 .hero-header {
   position: relative;
@@ -173,48 +173,91 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
   justify-content: center;
   text-align: center;
-  min-height: 320px;
-  padding: 2rem 0;
-  margin-bottom: 1rem;
-  overflow: hidden;
+  // One full screen minus the fixed navbar and the page's top padding
+  min-height: calc(100vh - 5.5rem);
+  min-height: calc(100svh - 5.5rem);
+  padding: 0;
+  margin-bottom: 0;
 }
 
-.hero-text {
+// Ring-shaped density behind the whole about page (hero, bio, news)
+.post:has(> .page-figure) {
+  position: relative;
+  margin-bottom: 190px; // whitespace below, so the loop's bottom (the figure bleeds 160px below) clears the footer
+}
+.post > .above-the-fold,
+.post > article {
   position: relative;
   z-index: 1;
 }
-
-// ─── Distribution band: hero backdrop ────────────────────────────────────────
-// Base include (_includes/distribution-band.liquid) — a soft density "hill"
-// with a few gently warped (not perfectly circular) level-set contours around
-// it, evoking geometry shaping a distribution's level sets. Static — no
-// moving parts.
-
-.hero-band {
+.page-figure {
   position: absolute;
-  top: 50%;
+  top: -60px; // extends above the content too (P.bleedTop), so the top of the loop isn't cut off
+  bottom: -160px; // extends below the content so the bottom of the loop isn't cut off (P.bleed in hero-figure.js)
+  // fade out softly at the very bottom, so nothing ends in a hard edge
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 90px), transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 90px), transparent 100%);
   left: 50%;
-  transform: translate(-50%, -50%);
-  width: min(820px, 100%);
-  height: auto;
-  color: #d9642e;
+  width: 100vw;
+  transform: translateX(-50%);
   z-index: 0;
   pointer-events: none;
 }
-
-@media (max-width: 767px) {
-  .hero-band {
-    display: none;
-  }
+.page-figure canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+// Figure color per theme (read by hero-figure.js, which repaints on a theme switch)
+:root {
+  --page-figure-color: #d9642e;
+}
+html[data-theme="dark"] {
+  --page-figure-color: #e07a45;
 }
 
+// Text centred in the first screen, inside the ring's top arc
+.hero-text {
+  position: relative;
+  z-index: 1;
+  margin-top: 0;
+  max-width: 40rem;
+  padding: 0 1rem;
+}
+
+.hero-tagline {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--global-text-color-light);
+  margin: 0 auto;
+  max-width: 28rem;
+}
+
+.hero-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--global-theme-color);
+  opacity: 0.85;
+  margin: 0 0 1rem;
+}
+
+@media (max-width: 767px) {
+  .hero-text {
+    margin-top: 0;
+  }
+}
 
 // ─── About page: name + subtitle ─────────────────────────────────────────────
 
 // Name: large, high-contrast, serif
 .post-header .post-title {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-size: clamp(2.4rem, 5.5vw, 3.8rem);
   font-weight: 700;
   line-height: 1.12;
   letter-spacing: -0.025em;
