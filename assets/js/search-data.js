@@ -37,7 +37,18 @@ ninja.data = [{
               handler: () => {
                 window.location.href = "/teaching/";
               },
-            },{id: "post-leveraging-the-shape-of-data-to-improve-generalization",
+            },{id: "post-quantifying-uncertainty-by-sampling-loss-minima-with-dissipative-riemannian-dynamics",
+        
+          title: "Quantifying uncertainty by sampling loss minima with dissipative Riemannian dynamics",
+        
+        description: "On how classical mechanics and Riemannian geometry can be combined to sample the minima of a loss function.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/notes/2026/DiMS/";
+          
+        },
+      },{id: "post-leveraging-the-shape-of-data-to-improve-generalization",
         
           title: "Leveraging the shape of data to improve generalization",
         
