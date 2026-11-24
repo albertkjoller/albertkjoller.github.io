@@ -222,7 +222,7 @@ html[data-theme="dark"] {
   position: relative;
   z-index: 1;
   margin-top: 0;
-  max-width: 40rem;
+  max-width: 48rem;
   padding: 0 1rem;
 }
 
@@ -249,6 +249,25 @@ html[data-theme="dark"] {
 @media (max-width: 767px) {
   .hero-text {
     margin-top: 0;
+  }
+}
+
+// ─── Page fade-in ────────────────────────────────────────────────────────────
+// Every page fades in once its fonts have loaded (see the script at the end of _includes/head.liquid), so
+// no text flashes in a fallback font first. Everything except the navbar (<header>) is faded. The
+// transition is only active during the fade, so it never interferes with other elements' own transitions.
+html.page-fonts-wait body > :not(header) {
+  opacity: 0 !important;
+}
+html.page-fonts-fading body > :not(header) {
+  transition: opacity 0.5s ease !important;
+}
+
+// The name stays on one line on wider screens. Without this it briefly wraps onto two lines while the
+// page still shows the (wider) fallback font, before Playfair Display has loaded.
+@media (min-width: 768px) {
+  .hero-text .post-title {
+    white-space: nowrap;
   }
 }
 

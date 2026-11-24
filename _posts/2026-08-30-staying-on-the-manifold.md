@@ -27,6 +27,7 @@ toc:
       - name: Tangential noise
       - name: Geodesic noise
       - name: Brownian motion noise
+      - name: Comparing the methods
   - name: What if I do not know the shape of my data?
   - name: But does it improve generalization?
   - name: Citation
@@ -165,7 +166,7 @@ _styles: >
 
 ## The pros and cons of "ordinary" input noise
 
-When assessing the usefulness of a predictive model, one critical aspect is whether it can generalize to data that was not used during training of the model. A commonly known approach to improve generalization performance is through *data augmentation*, where the training data set $$\mathcal{D}=\{\boldsymbol{x}_n,y_n\}_{n=1}^{N}$$ is updated to contain additional, modified versions of selected training data points, e.g. $$\boldsymbol{x}_n \in \mathbb{R}^{D}$$, while the associated label $y_n$ remains fixed. There exist many augmentation mechanisms but they often take structural forms, such as rotations or translations of image data. Alternatively, augmentations can be random variations of training points. 
+When assessing the usefulness of a predictive model, one critical aspect is whether it can generalize to data that was not used during training of the model. A commonly known approach to improve generalization performance is through *data augmentation*, where the training data set $$\mathcal{D}=\{(\boldsymbol{x}_n,y_n)\}_{n=1}^{N}$$ is updated to contain additional, modified versions of selected training data points, e.g. $$\boldsymbol{x}_n \in \mathbb{R}^{D}$$, while the associated label $y_n$ remains fixed. There exist many augmentation mechanisms but they often take structural forms, such as rotations or translations of image data. Alternatively, augmentations can be random variations of training points. 
 
 This note covers an approach based on random variations of training data<d-cite key="jacobsen2026staying"></d-cite>, while leveraging the structure of the data points themselves. Random variations of inputs is often referred to as *noise injection* on the inputs, and back in 1995 Bishop<d-cite key="bishop1995training"></d-cite> showed that training with noise injection is (in expectation) equivalent to training a regularized model with beneficial generalization properties. Bishop's work considered a very simple noise injection scheme, namely that of adding isotropic Gaussian noise to selected inputs:
 
@@ -404,11 +405,13 @@ ambient_traj, param_traj = manifold.brownian_motion(
 ```
 </details>
 
+### Comparing the methods
+
 To get a feel for how the four strategies differ, Figure 7 lets you draw samples with each of them from the same data point on the sphere, and shows where they land in the parameter space of the chart $X$.
 
 <div class="sphere-noise-widget l-page"></div>
 <div class="caption">
-    <span class="fig-num">Figure 7.</span><span>Try all four. Drag to rotate the sphere and click on it to move the data point $\boldsymbol{x}$ (<span class="mark-dot" style="background:#2F4F4F;"></span>). Ambient noise (<span class="mark-dot" style="background:#C0272D;"></span>) leaves the sphere, tangential noise (<span class="mark-dot" style="background:#E39B3A;"></span>) lands on the tangent plane at $\boldsymbol{x}$, geodesic noise (<span class="mark-dot" style="background:#3C7A3C;"></span>) follows a great circle and lands on the sphere, and Brownian motion (<span class="mark-dot" style="background:#3B6FA0;"></span>) takes many small random steps on the sphere. "All four" builds one sample per method from the same Gaussian draw $\boldsymbol{\epsilon}$. New geodesic samples travel along their great circle, and new Brownian samples walk there step by step. The slider sets $\sigma$, and Brownian motion runs for time $T=\sigma^2$ so its spread matches. Samples behind the sphere are drawn faded. The panel shows the same samples in the parameter space $(u_1,u_2)$ through $X^{-1}$; it does not change when you rotate the sphere. Ambient and tangential samples do not lie on the sphere, so they have no coordinates and appear only on the sphere. Paths that cross $u_2=0$ continue from the opposite edge, and near the poles, where $u_2$ is undefined, small steps on the sphere become large jumps in $u_2$. For speed, this demo uses the sphere's closed-form geometry (great circles and renormalized steps) instead of solving the geodesic and Brownian equations in the parameter space.</span>
+    <span class="fig-num">Figure 7.</span><span>Drag to rotate the sphere and click on it to move the data point $\boldsymbol{x}$ (<span class="mark-dot" style="background:#2F4F4F;"></span>). Draw samples with ambient (<span class="mark-dot" style="background:#C0272D;"></span>), tangential (<span class="mark-dot" style="background:#E39B3A;"></span>), geodesic (<span class="mark-dot" style="background:#3C7A3C;"></span>) or Brownian (<span class="mark-dot" style="background:#3B6FA0;"></span>) noise, or press "All four" to draw one sample with each method from the same Gaussian draw. The slider sets the noise level $\sigma$, and the side panel shows the samples that lie on the sphere in the parameter space $(u_1, u_2)$.</span>
 </div>
 
 <div class="keyidea" markdown="1">
@@ -440,7 +443,13 @@ $$
 $$
 
 <aside>
-<strong>Dictionary.</strong> Chart $X$ = decoder $f_d$, inverse chart $X^{-1}$ = encoder $f_e$, parameter space $\mathcal{U}$ = latent space $\mathcal{Z}$. The autoencoder's weights $\boldsymbol{\theta}$ play no role in the geometry.
+<strong>Dictionary</strong> from charts to autoencoders:<br>
+<br>
+$X$ = decoder $f_d$<br>
+$X^{-1}$ = encoder $f_e$<br>
+$\mathcal{U}$ = latent space $\mathcal{Z}$<br>
+<br>
+The parameters of the autoencoder, $\boldsymbol{\theta}$, do not affect the geometry.
 </aside>
 
 Once trained, the decoder $f_d$ itself plays the role of the chart $X$ from before, and the parameter space coordinate is instead the latent code $\boldsymbol{z} = f_e(\boldsymbol{x}) \in \mathcal{Z} \subseteq \mathbb{R}^d$, so that a reconstruction is given by $\tilde{\boldsymbol{x}} = f_d(\boldsymbol{z})$. Remark our use of the term *parameter space*, since the *weight space* $\Theta$ would often be referred to as the parameter space of the autoencoder, however we use it to describe the parameter space of the learned data manifold $\mathcal{Z}$.
@@ -462,7 +471,7 @@ As an example, we train an autoencoder and run four different Brownian motions f
 
 ## But does it improve generalization?
 
-Yes indeed, and we also have theory on this! You can find results in the [full paper](https://arxiv.org/pdf/2509.20201).
+Yes, indeed! You can find results in the [full paper](https://arxiv.org/pdf/2509.20201) where we also have some theory.
 
 If you want to try it out yourself, we provide the example code for MNIST in [an associated notebook](https://github.com/albertkjoller/geometric-ml/blob/main/staying-on-the-manifold/mnist.ipynb). Future research directions could consider more advanced approximations of the data manifold, e.g. using generative models.
 

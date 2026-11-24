@@ -1,3 +1,7 @@
+{% if page.hidden %}
+  <!-- Hidden (unlisted) page: online, but kept out of search engines -->
+  <meta name="robots" content="noindex, nofollow">
+{% endif %}
 {% if site.enable_google_verification or site.enable_bing_verification %}
   <!-- Website verification -->
   {% if site.enable_google_verification %}

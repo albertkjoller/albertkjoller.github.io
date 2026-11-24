@@ -1,0 +1,17 @@
+{%- comment -%}
+  Reading time in minutes (200 words per minute, at least 1), stored in the variable `reading_time`.
+  Counts the main text only: the content of <details> dropdowns is left out.
+  Used by the distill layout (the note itself) and by the notes overview (_pages/blog.md), so both agree.
+  Usage: {% include reading_time.liquid text=post.content %}
+{%- endcomment -%}
+{%- assign _rt_parts = include.text | split: '<details' -%}
+{%- capture _rt_main -%}
+  {%- for _rt_part in _rt_parts -%}
+    {%- if forloop.first -%}{{ _rt_part }}{%- else -%}
+      {%- assign _rt_after = _rt_part | split: '</details>' -%}
+      {%- if _rt_after.size > 1 -%}{{ _rt_after | last }}{%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- assign reading_time = _rt_main | strip_html | number_of_words | plus: 199 | divided_by: 200 -%}
+{%- if reading_time == 0 -%}{%- assign reading_time = 1 -%}{%- endif -%}

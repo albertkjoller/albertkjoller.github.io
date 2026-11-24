@@ -187,3 +187,33 @@
 {% if page.tikzjax %}
   <link defer rel="stylesheet" type="text/css" href="https://tikzjax.com/v1/fonts.css">
 {% endif %}
+
+<!-- Fade every page in once its fonts have loaded, so no text flashes in a fallback font first.
+     Runs in <head>, before anything is drawn. Without JavaScript, or after 1.5 s at the latest, the page
+     is shown anyway. The navbar is not faded. Styles: "Page fade-in" in _sass/_custom.scss. -->
+<script>
+  (function () {
+    var root = document.documentElement;
+    root.classList.add("page-fonts-wait");
+    var done = false;
+    var show = function () {
+      if (done) return;
+      done = true;
+      requestAnimationFrame(function () {
+        root.classList.add("page-fonts-fading");
+        root.classList.remove("page-fonts-wait");
+        setTimeout(function () { root.classList.remove("page-fonts-fading"); }, 700);
+      });
+    };
+    if (document.fonts && document.fonts.load) {
+      Promise.all([
+        document.fonts.load('700 1em "Playfair Display"'),
+        document.fonts.load('400 1em "Inter"'),
+        document.fonts.load('600 1em "Inter"'),
+      ]).then(show, show);
+    } else {
+      show();
+    }
+    setTimeout(show, 1500);
+  })();
+</script>

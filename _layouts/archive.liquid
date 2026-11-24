@@ -19,6 +19,7 @@ layout: default
     <div class="table-responsive">
       <table class="table table-sm table-borderless">
         {% for document in page.documents %}
+          {% if document.hidden %}{% continue %}{% endif %}
           <tr>
             <th scope="row">{{ document.date | date: '%b %d, %Y' }}</th>
             <td>

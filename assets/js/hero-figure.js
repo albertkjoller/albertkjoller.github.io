@@ -59,15 +59,17 @@
       [3, 0.25, 1.3], // the width also breathes along the loop: [cycles per loop, amplitude, phase]
       [7, 0.15, 0.4], // (amplitudes are doubled along the top, so the width varies most there)
     ],
-    kappa: 1.2, // mild preference for the mode along the band
-    alpha: 0.25, // metric height scale, in units of σ² (G = I + α σ² ∇L∇Lᵀ)
-    step: 1.2, // px: standard deviation of one step (dt = step²)
+    kappa: 3.0, // mild preference for the mode along the band
+    alpha: 0.5, // metric height scale, in units of σ² (G = I + α σ² ∇L∇Lᵀ)
+    step: 3.0, // px: standard deviation of one step (dt = step²)
     stepsPerFrame: 8,
-    walkerSeconds: 30, // each walker runs this long, then the next one starts elsewhere on the band
+    walkerSeconds: 15, // each walker runs this long, then the next one starts elsewhere on the band
     levels: [0.1, 0.3, 0.6], // contour levels of the band (fractions of the peak density)
     pathAlpha: 0.2, // opacity of the accumulated paths
     headTrail: 160, // recent steps drawn stronger, so the moving particle is visible
     maxPoints: 800000, // stored path points (for redrawing after a resize / theme change)
+    pixelBudget: 16e6, // max device pixels per page-sized canvas (sets the resolution on high-density screens)
+    headBox: 480, // px: size of the small canvas that follows the moving particle
   };
 
   // ─── Colors (theme-aware) ──────────────────────────────────────────────────
@@ -142,16 +144,20 @@
     if (!r.width || !r.height) return false;
     W = r.width;
     H = r.height;
-    dpr = Math.min(window.devicePixelRatio || 1, W * H > 2.5e6 ? 1 : 2); // big canvases: keep memory reasonable
+    // Sharp on high-density (Retina) screens, within a pixel budget per page-sized canvas
+    dpr = Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(P.pixelBudget / (W * H)));
     for (const [c, x] of [
       [cBase, xBase],
       [cInk, xInk],
-      [cHead, xHead],
     ]) {
       c.width = Math.round(W * dpr);
       c.height = Math.round(H * dpr);
       x.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
+    // The moving particle gets a small canvas that follows it (see drawHead), always at full resolution
+    headDpr = Math.min(window.devicePixelRatio || 1, 2);
+    cHead.width = cHead.height = Math.round(P.headBox * headDpr);
+    Object.assign(cHead.style, { inset: "auto", left: "0", top: "0", width: P.headBox + "px", height: P.headBox + "px" });
     const post = fig.closest(".post");
     const content = post ? post.clientWidth : Math.min(W, 900);
     const phone = W < content + 120;
@@ -226,9 +232,49 @@
       }
     return curve[curve.length - 1].slice(0, 2);
   }
-  // Paths are stored relative to the canvas size, so they roughly survive a resize
-  const norm = (x, y) => [x / W, y / H];
-  const px = (u, v) => [u * W, v * H];
+  // Paths are stored in coordinates attached to the curve: u = position along the loop (0 … 1, as a
+  // fraction of its length) and n = signed offset across it (px, along the normal). When the page changes
+  // size and the curve is rebuilt, every point is drawn again at the same place relative to the band.
+  function norm(x, y) {
+    let best = Infinity,
+      bs = 0,
+      side = 0;
+    for (let i = 1; i < curve.length; i++) {
+      const [ax, ay, as] = curve[i - 1],
+        [bx, by, bs2] = curve[i];
+      const vx = bx - ax,
+        vy = by - ay,
+        l2 = vx * vx + vy * vy || 1;
+      const t = Math.max(0, Math.min(1, ((x - ax) * vx + (y - ay) * vy) / l2));
+      const dx = x - ax - t * vx,
+        dy = y - ay - t * vy,
+        d2 = dx * dx + dy * dy;
+      if (d2 < best) {
+        best = d2;
+        bs = as + t * (bs2 - as);
+        side = vx * dy - vy * dx >= 0 ? 1 : -1; // which side of the curve
+      }
+    }
+    return [bs / len, side * Math.sqrt(best)];
+  }
+  function px(u, n) {
+    const sArc = (((u % 1) + 1) % 1) * len;
+    let lo = 1,
+      hi = curve.length - 1; // binary search for the segment containing sArc
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      if (curve[mid][2] < sArc) lo = mid + 1;
+      else hi = mid;
+    }
+    const [ax, ay, as] = curve[lo - 1],
+      [bx, by, bs] = curve[lo];
+    const t = (sArc - as) / (bs - as || 1),
+      vx = bx - ax,
+      vy = by - ay,
+      l = Math.hypot(vx, vy) || 1;
+    // normal pointing to the side with positive cross product (matches norm)
+    return [ax + t * vx - (vy / l) * n, ay + t * vy + (vx / l) * n];
+  }
 
   // ─── Density layer ─────────────────────────────────────────────────────────
   // The geometry (density grid, contour segments, masks) depends only on the layout, so it is computed
@@ -423,7 +469,7 @@
     while (!v) v = Math.random();
     return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
   }
-  const walkers = []; // each: flat [u0, v0, u1, v1, ...] (normalized)
+  const walkers = []; // each: flat [u0, n0, u1, n1, ...] in curve coordinates (see norm / px)
   let stored = 0,
     cur = null,
     x = 0,
@@ -505,13 +551,18 @@
   }
 
   // The moving particle and its recent trail: repaint only around it
-  let dirty = null;
+  let headDpr = 1;
   function drawHead() {
-    if (dirty) xHead.clearRect(dirty[0] - 6, dirty[1] - 6, dirty[2] - dirty[0] + 12, dirty[3] - dirty[1] + 12);
+    // Move the small head canvas so it is centred on the particle, then redraw it entirely
+    const half = P.headBox / 2,
+      ox = Math.round(x - half),
+      oy = Math.round(y - half);
+    cHead.style.transform = `translate(${ox}px, ${oy}px)`;
+    xHead.setTransform(headDpr, 0, 0, headDpr, -ox * headDpr, -oy * headDpr);
+    xHead.clearRect(ox, oy, P.headBox, P.headBox);
     const w = cur,
       n = w.length / 2,
       from = Math.max(0, n - P.headTrail);
-    let box = [x, y, x, y];
     xHead.lineWidth = 1.6;
     xHead.lineCap = "round";
     for (let i = from + 1; i < n; i++) {
@@ -522,22 +573,22 @@
       xHead.moveTo(a0, b0);
       xHead.lineTo(a1, b1);
       xHead.stroke();
-      box = [Math.min(box[0], a1), Math.min(box[1], b1), Math.max(box[2], a1), Math.max(box[3], b1)];
     }
     xHead.fillStyle = rgba(1);
     xHead.beginPath();
     xHead.arc(x, y, 3, 0, 2 * Math.PI);
     xHead.fill();
-    dirty = box;
   }
 
   // ─── Lifecycle ─────────────────────────────────────────────────────────────
-  // New size: recompute the geometry, then repaint
+  // New size: recompute the geometry, then repaint. Paths live in curve coordinates (see norm/px), so they
+  // are redrawn in the same place relative to the band.
+  let begun = false;
   function rebuild() {
-    const before = cur ? norm(x, y) : null;
+    const before = cur ? norm(x, y) : null; // the particle, in coordinates attached to the old curve
     if (!layout()) return false;
-    if (before) [x, y] = px(...before);
     geo = buildGeometry();
+    if (before) [x, y] = px(...before);
     repaint();
     return true;
   }
@@ -546,8 +597,6 @@
     drawBase();
     redrawInk();
     inkStyle();
-    xHead.clearRect(0, 0, W, H);
-    dirty = null;
     if (cur) drawHead();
   }
 
@@ -563,25 +612,43 @@
     requestAnimationFrame(frame);
   }
   function start() {
-    if (!running && !reduced) {
+    if (begun && !running && !reduced) {
       running = true;
       requestAnimationFrame(frame);
     }
   }
 
+  // The density is drawn right away. The particle only starts once the page has finished loading (fonts,
+  // images) and stopped changing size, so its first steps are not drawn on a curve that is about to move.
+  function begin() {
+    if (begun) return;
+    begun = true;
+    if (!rebuild()) return;
+    inkStyle();
+    newWalker(); // the first walker starts at the mode
+    if (reduced) {
+      // A still image: a few walkers' worth of paths
+      for (let w = 0; w < 8; w++) {
+        for (let k = 0; k < 4000; k++) step();
+        newWalker();
+      }
+    }
+    drawHead();
+    start();
+  }
+  let loaded = false,
+    beginTimer;
+  const scheduleBegin = () => {
+    clearTimeout(beginTimer);
+    beginTimer = setTimeout(begin, 400); // ... after 400 ms without a size change
+  };
   readColors();
   if (!rebuild()) return;
-  inkStyle();
-  newWalker();
-  if (reduced) {
-    // A still image: a few walkers' worth of paths
-    for (let w = 0; w < 8; w++) {
-      for (let k = 0; k < 4000; k++) step();
-      newWalker();
-    }
-  }
-  drawHead();
-  start();
+  const pageLoaded = new Promise((r) => (document.readyState === "complete" ? r() : window.addEventListener("load", r, { once: true })));
+  Promise.all([pageLoaded, document.fonts ? document.fonts.ready : null]).then(() => {
+    loaded = true;
+    scheduleBegin();
+  });
 
   new MutationObserver(() => {
     readColors();
@@ -596,6 +663,7 @@
     lastSize = key;
     clearTimeout(rt);
     rt = setTimeout(rebuild, 250);
+    if (!begun && loaded) scheduleBegin(); // still settling: wait a bit longer before starting the walk
   }).observe(fig);
   new IntersectionObserver((e) => {
     visible = e[0].isIntersecting;

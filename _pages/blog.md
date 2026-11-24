@@ -46,17 +46,17 @@ pagination:
 </div>
 {% endif %}
 
-{% assign featured_posts = site.posts | where: "featured", "true" %}
+{% assign featured_posts = site.posts | where: "featured", "true" | where_exp: "post", "post.hidden != true" %}
 {% if featured_posts.size > 0 %}
 <div class="notes-pinned-label">pinned</div>
 <div class="notes-grid notes-grid--featured">
   {% for post in featured_posts %}
   {% if post.external_source == blank %}
-    {% assign read_time = post.content | strip_html | number_of_words | plus: 199 | divided_by: 200 %}
+    {% include reading_time.liquid text=post.content %}
   {% else %}
-    {% assign read_time = post.feed_content | strip_html | number_of_words | plus: 199 | divided_by: 200 %}
+    {% include reading_time.liquid text=post.feed_content %}
   {% endif %}
-  {% if read_time == 0 %}{% assign read_time = 1 %}{% endif %}
+  {% assign read_time = reading_time %}
   <article class="note-card note-card--featured">
     <div class="note-card-pin"><i class="fa-solid fa-thumbtack fa-xs"></i></div>
     {% if post.thumbnail %}
@@ -91,12 +91,13 @@ pagination:
   {% endif %}
 
   {% for post in postlist %}
+  {% if post.hidden %}{% continue %}{% endif %}
   {% if post.external_source == blank %}
-    {% assign read_time = post.content | strip_html | number_of_words | plus: 199 | divided_by: 200 %}
+    {% include reading_time.liquid text=post.content %}
   {% else %}
-    {% assign read_time = post.feed_content | strip_html | number_of_words | plus: 199 | divided_by: 200 %}
+    {% include reading_time.liquid text=post.feed_content %}
   {% endif %}
-  {% if read_time == 0 %}{% assign read_time = 1 %}{% endif %}
+  {% assign read_time = reading_time %}
   {% assign year = post.date | date: "%Y" %}
   {% assign tags = post.tags | join: "" %}
   {% assign categories = post.categories | join: "" %}
