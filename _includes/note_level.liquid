@@ -1,0 +1,19 @@
+{%- comment -%}
+  Level badge for a note. Usage: {% include note_level.liquid level=post.level %}
+  The scale (coffee, pen & paper, ...) is picked by `note_level_scale` in _config.yml and defined in
+  _data/note_levels/<scale>.yml. `icons_only=true` gives just icons + label (used in the filter chips),
+  `plain=true` gives just the icons, with name and description on hover (a note's top bar).
+{%- endcomment -%}
+{%- assign nl_scale = site.data.note_levels[site.note_level_scale] -%}
+{%- assign nl_key = include.level | append: '' -%}
+{%- assign nl = nl_scale.steps | where: 'key', nl_key | first -%}
+{%- if nl -%}
+  {%- capture nl_icons -%}{%- for icon in nl.icons -%}<i class="{{ icon }}"></i>{%- endfor -%}{%- endcapture -%}
+  {%- if include.icons_only -%}
+    <span class="note-level-icons" aria-hidden="true">{{ nl_icons }}</span> {{ nl.label }}
+  {%- elsif include.plain -%}
+    <span class="note-level-plain" title="{{ nl.label | capitalize }}: {{ nl.hint }}" role="img" aria-label="{{ nl.label }}"><span class="note-level-icons" aria-hidden="true">{{ nl_icons }}</span></span>
+  {%- else -%}
+    <span class="note-level note-level--{{ nl.key }}" title="{{ nl_scale.name | capitalize }}: {{ nl.hint }}"><span class="note-level-icons" aria-hidden="true">{{ nl_icons }}</span>{{ nl.label }}</span>
+  {%- endif -%}
+{%- endif -%}

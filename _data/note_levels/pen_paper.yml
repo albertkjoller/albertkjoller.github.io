@@ -1,0 +1,23 @@
+# "Pen and paper" scale: how much pen and paper you need to follow a note.
+# The scale in use is set by `note_level_scale` in _config.yml. A note sets `level: "1"` to `"4"` in its
+# front matter. Every scale uses the same keys, so switching scale needs no change in the notes.
+name: pen & paper
+legend_title: What do the icons mean?
+legend_intro: How much pen and paper you need to follow a note. It says nothing about the reader, only about how dense the note is.
+steps:
+  - key: "1"
+    label: just read along
+    icons: [fa-solid fa-book-open]
+    hint: No pen needed, sit back and read
+  - key: "2"
+    label: keep a pen handy
+    icons: [fa-solid fa-pen]
+    hint: A few equations worth jotting down now and then
+  - key: "3"
+    label: a sheet of paper
+    icons: [fa-solid fa-pen, fa-regular fa-file]
+    hint: Some derivations to follow along with
+  - key: "4"
+    label: a stack of paper
+    icons: [fa-solid fa-pen, fa-regular fa-file, fa-regular fa-file, fa-regular fa-file]
+    hint: Dense and technical, best worked through with pen and paper

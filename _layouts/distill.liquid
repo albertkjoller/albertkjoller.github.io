@@ -17,6 +17,10 @@
 
   {% include reading_time.liquid text=content %}
   {% assign _reading_time = reading_time %}
+  {% if page.level %}
+    {% capture _level_badge %}{% include note_level.liquid level=page.level plain=true %}{% endcapture %}
+    {% assign _level_scale = site.data.note_levels[site.note_level_scale] %}
+  {% endif %}
 
   <d-front-matter>
     <script async type="text/json">
@@ -25,6 +29,9 @@
             "description": "{{ page.description }}",
             "published": "{{ page.date | date: '%B %d, %Y' }}",
             "readingTime": "~{{ _reading_time }} min read",
+            "lastUpdated": "{{ page.last_updated | default: page.date | date: '%B %-d, %Y' }}",{% if _level_badge %}
+            "concentration": {{ _level_badge | strip | jsonify }},
+            "concentrationTitle": {{ _level_scale.name | jsonify }},{% endif %}
             "authors": [
               {% for author in page.authors %}
               {

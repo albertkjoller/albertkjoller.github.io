@@ -1,0 +1,23 @@
+# "Concentration" scale: how strong a coffee you need to follow a note.
+# The scale in use is set by `note_level_scale` in _config.yml. A note sets `level: "1"` to `"4"` in its
+# front matter. Every scale uses the same keys, so switching scale needs no change in the notes.
+name: concentration
+legend_title: What do the cups mean?
+legend_intro: How much concentration a note asks for.
+steps:
+  - key: "1"
+    label: decaf
+    icons: [fa-solid fa-mug-saucer]
+    hint: A relaxed read, no maths needed
+  - key: "2"
+    label: single shot
+    icons: [fa-solid fa-mug-hot]
+    hint: Some focus, a few equations along the way
+  - key: "3"
+    label: double shot
+    icons: [fa-solid fa-mug-hot, fa-solid fa-mug-hot]
+    hint: Focused reading, with derivations to follow along with
+  - key: "4"
+    label: triple shot
+    icons: [fa-solid fa-mug-hot, fa-solid fa-mug-hot, fa-solid fa-mug-hot]
+    hint: Dense and technical, best with a quiet hour

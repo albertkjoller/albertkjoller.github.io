@@ -5,7 +5,7 @@ date: 2026-08-30 12:00:00-0000
 description: On how to ensure that augmentations respect the shape of data.
 tags:
 categories: geometry generalization
-level: 
+level: "2"
 featured: false
 related_posts: true
 bibliography: noise_injection.bib
@@ -15,7 +15,7 @@ og_image: https://albertkjoller.github.io/assets/img/noise_injection/manifold-og
 thumbnail: assets/img/noise_injection/manifold-thumbnail.jpg # image on the post's card in the notes list
 # see_also:
 #   - title: Loss Surfaces as Riemannian Manifolds
-#     url: /notes/2026/loss-geometry
+#     url: /notes/loss-geometry
 #     description: The embedding, metric tensor, and geodesics that underpin the DiMS dynamics.
 authors:
   - name: Albert Kjøller Jacobsen

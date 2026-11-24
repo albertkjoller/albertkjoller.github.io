@@ -107,6 +107,15 @@
     if (source.readingTime) {
       target.readingTime = source.readingTime;
     }
+    // Shown as "Last updated" in the byline (front matter `last_updated`, or else the post date)
+    if (source.lastUpdated) {
+      target.lastUpdated = source.lastUpdated;
+    }
+    // Note level badge (rendered by _includes/note_level.liquid, passed in from _layouts/distill.liquid)
+    if (source.concentration) {
+      target.concentration = source.concentration;
+      target.concentrationTitle = source.concentrationTitle || "Level";
+    }
   }
 
   class FrontMatter {
@@ -2105,13 +2114,26 @@ d-appendix > distill-appendix {
         .join("")}
     </div>
     <div>
-      <h3>Published</h3>
+      ${
+        frontMatter.lastUpdated
+          ? `<h3>Last updated</h3>
+      <p>${frontMatter.lastUpdated}</p>`
+          : `<h3>Published</h3>
       ${
         frontMatter.publishedDate
           ? `<p>${frontMatter.publishedMonth} ${frontMatter.publishedDay}, ${frontMatter.publishedYear}</p>`
           : `<p><em>Not published yet.</em></p>`
+      }`
       }
     </div>
+    ${
+      frontMatter.concentration
+        ? `<div class="byline-level">
+      <h3>${frontMatter.concentrationTitle}</h3>
+      <p>${frontMatter.concentration}</p>
+    </div>`
+        : ""
+    }
   </div>
 `;
   }

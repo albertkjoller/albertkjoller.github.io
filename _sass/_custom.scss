@@ -348,6 +348,8 @@ article > h2 a {
 
 // ─── Publications ────────────────────────────────────────────────────────────
 
+$pub-preview-height: 77px; // matches the text block: venue badge + preview = title + authors + venue + buttons
+
 .publications h1 {
   font-family: 'Playfair Display', Georgia, serif;
 }
@@ -384,6 +386,171 @@ article > h2 a {
   border-radius: 4px;
   padding: 0.18rem 0.65rem;
   transition: all 0.15s ease;
+}
+
+// One line each for title, authors and venue (wide screens). The author list is
+// trimmed to fit by assets/js/publications.js, and may wrap once it is expanded.
+.publications ol.bibliography li .author {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &.is-expanded {
+    white-space: normal;
+    overflow: visible;
+  }
+
+  .more-authors:focus-visible {
+    outline: 2px solid var(--global-theme-color);
+    outline-offset: 2px;
+  }
+}
+
+@media (min-width: 768px) {
+  .publications ol.bibliography li .title,
+  .publications ol.bibliography li .periodical {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+// Preview thumbnails: one standard box, as high as the text next to it (venue badge
+// included). The figure is scaled to fit inside it on a white card.
+.publications ol.bibliography li .abbr figure {
+  margin: 0;
+}
+
+.publications ol.bibliography li img.preview {
+  display: block;
+  width: 100%;
+  height: $pub-preview-height;
+  object-fit: contain;
+  padding: 4px;
+  background-color: #fff;
+  cursor: zoom-in;
+
+  // Phones: the thumbnail sits above the text at full width, so give it more height
+  @media (max-width: 575.98px) {
+    height: 160px;
+  }
+}
+
+// Publication previews without a dark version: the figure on the dark card colour in dark mode
+html[data-theme="dark"] {
+  .publications ol.bibliography li .abbr:not([data-dark]) img.preview {
+    background-color: var(--global-card-bg-color);
+  }
+
+  .pub-lightbox-frame:not([data-dark]) {
+    background-color: var(--global-card-bg-color);
+  }
+}
+
+// Venue badges: a second venue (also_in_abbr in papers.bib) sits next to the first one
+.publications ol.bibliography li .abbr .abbr-badges {
+  display: flex;
+  gap: 4px;
+
+  abbr {
+    flex: 1 1 0;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+// Dark mode for preview figures (per paper with preview_dark in papers.bib, see _layouts/bib.liquid).
+// preview_dark={file.png}: a separate dark version, swapped in for dark mode. Make one with
+//   python3 bin/make_dark_preview.py assets/img/publication_preview/<figure>.png
+// preview_dark={invert}: color-inverted (hue-rotated back so colors keep their hue).
+// Not set: the light figure is shown as it is, on its white card.
+.publications ol.bibliography li .abbr .preview--dark {
+  display: none;
+}
+
+html[data-theme="dark"] {
+  .publications ol.bibliography li .abbr {
+    &[data-dark="invert"] img.preview {
+      filter: invert(1) hue-rotate(180deg);
+    }
+
+    &[data-dark="image"] {
+      .preview--light {
+        display: none;
+      }
+
+      .preview--dark {
+        display: block;
+        background-color: var(--global-card-bg-color);
+      }
+    }
+  }
+
+  .pub-lightbox-frame {
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+
+    &[data-dark="invert"] {
+      background-color: #000;
+
+      img {
+        filter: invert(1) hue-rotate(180deg);
+      }
+    }
+
+    &[data-dark="image"] {
+      background-color: var(--global-card-bg-color);
+    }
+  }
+}
+
+// Lightbox for preview figures: a fixed, standard-size frame above everything
+// (the navbar included), with the figure scaled to fit inside it.
+.pub-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: color-mix(in srgb, var(--global-bg-color) 94%, transparent);
+  cursor: zoom-out;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+
+  &.is-open {
+    opacity: 1;
+  }
+}
+
+.pub-lightbox-frame {
+  width: min(92vw, 960px, calc(85vh * 1.6));
+  aspect-ratio: 16 / 10;
+  padding: 1.25rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.18);
+  transform: scale(0.96);
+  transition: transform 0.25s ease;
+
+  .pub-lightbox.is-open & {
+    transform: scale(1);
+  }
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pub-lightbox,
+  .pub-lightbox-frame {
+    transition: none;
+  }
 }
 
 // ─── Blog header ─────────────────────────────────────────────────────────────
@@ -574,6 +741,107 @@ body {
   border-top: 1px solid var(--global-divider-color);
 }
 
+// Filter chips (topic / level), see assets/js/notes-filter.js
+.notes-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1.8rem;
+}
+
+.notes-filter-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.notes-filter-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--global-text-color-light);
+  min-width: 3.5rem;
+}
+
+.notes-chip {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 0.25rem 0.7rem;
+  border-radius: 100px;
+  border: 1px solid var(--global-divider-color);
+  background: transparent;
+  color: var(--global-text-color-light);
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    color: var(--global-theme-color);
+    border-color: var(--global-theme-color);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--global-theme-color);
+    outline-offset: 2px;
+  }
+
+  &.is-active {
+    background: var(--global-theme-color);
+    border-color: var(--global-theme-color);
+    color: var(--global-card-bg-color);
+  }
+}
+
+// "What do the cups mean?" overview below the filters (steps from _data/note_levels/)
+.notes-levels-legend {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  color: var(--global-text-color-light);
+
+  summary {
+    cursor: pointer;
+    width: fit-content;
+    text-decoration: underline dotted;
+    text-underline-offset: 3px;
+
+    &:hover {
+      color: var(--global-theme-color);
+    }
+  }
+
+  p {
+    margin: 0.6rem 0 0.5rem;
+    color: inherit;
+  }
+
+  dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.45rem 1rem;
+    align-items: center;
+    margin: 0;
+  }
+
+  dt {
+    font-weight: normal;
+  }
+
+  dd {
+    margin: 0;
+  }
+}
+
+.notes-empty {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: var(--global-text-color-light);
+}
+
 // Card grid
 .notes-grid {
   display: flex;
@@ -626,29 +894,40 @@ body {
 
 // Difficulty level badges
 .note-level {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   font-family: 'Inter', sans-serif;
   font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.09em;
-  padding: 0.18rem 0.55rem;
+  padding: 0.18rem 0.6rem;
   border-radius: 100px;
+  background: rgba(46, 64, 87, 0.08);
+  color: var(--global-theme-color);
+  cursor: help;
+}
 
-  &--accessible {
-    background: #e6f4ec;
-    color: #28663a;
-  }
+html[data-theme="dark"] .note-level {
+  background: rgba(139, 175, 200, 0.12);
+}
 
-  &--technical {
-    background: #e6edf8;
-    color: #2a4a88;
-  }
+// Pen and paper icons: how much you need to follow the note (see _data/note_levels.yml)
+.note-level-icons {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.18rem;
+  font-size: 0.7rem;
+  letter-spacing: 0;
 
-  &--survey {
-    background: #f5ede0;
-    color: #7a4e1e;
+  .fa-file + .fa-file {
+    margin-left: -0.05rem;
   }
+}
+
+.notes-chip .note-level-icons {
+  margin-right: 0.3rem;
 }
 
 // Category pill (subtle, secondary to level badge)
@@ -664,6 +943,21 @@ body {
   background: transparent;
   border: 1px solid var(--global-divider-color);
   color: var(--global-text-color-light);
+}
+
+button.note-category {
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    color: var(--global-theme-color);
+    border-color: var(--global-theme-color);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--global-theme-color);
+    outline-offset: 2px;
+  }
 }
 
 .note-card-title {
@@ -916,4 +1210,22 @@ html[data-theme="dark"] .note-card-thumb {
 // Distill margin notes (<aside>): distill hard-codes black text, which disappears in dark mode.
 d-article aside {
   color: var(--global-text-color-light);
+}
+
+// The flex display above would otherwise override the `hidden` attribute used by the notes filters
+.notes-grid[hidden],
+.note-card[hidden] {
+  display: none !important;
+}
+
+// Concentration level in a note's byline (top bar), next to "Published": plain text like the
+// other entries: just the cups, with the name and description on hover
+d-byline .byline-level .note-level-plain {
+  cursor: help;
+
+  .note-level-icons {
+    gap: 0.25em;
+    font-size: 0.9em;
+    color: var(--global-theme-color);
+  }
 }
