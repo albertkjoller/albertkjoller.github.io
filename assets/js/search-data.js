@@ -21,7 +21,7 @@ ninja.data = [{
           description: "",
           section: "Navigation",
           handler: () => {
-            window.location.href = "/notes/index.html";
+            window.location.href = "/notes/";
           },
         },{id: "dropdown-cv",
               title: "CV",
@@ -37,15 +37,15 @@ ninja.data = [{
               handler: () => {
                 window.location.href = "/teaching/";
               },
-            },{id: "post-quantifying-uncertainty-by-sampling-loss-minima-with-dissipative-riemannian-dynamics",
+            },{id: "post-quantifying-uncertainty-by-sampling-loss-minima",
         
-          title: "Quantifying uncertainty by sampling loss minima with dissipative Riemannian dynamics",
+          title: "Quantifying uncertainty by sampling loss minima",
         
         description: "On how classical mechanics and Riemannian geometry can be combined to sample the minima of a loss function.",
         section: "Posts",
         handler: () => {
           
-            window.location.href = "/notes/2026/DiMS/";
+            window.location.href = "/notes/DiMS/";
           
         },
       },{id: "post-leveraging-the-shape-of-data-to-improve-generalization",
@@ -56,7 +56,7 @@ ninja.data = [{
         section: "Posts",
         handler: () => {
           
-            window.location.href = "/notes/2026/staying-on-the-manifold/";
+            window.location.href = "/notes/staying-on-the-manifold/";
           
         },
       },{id: "news-my-personal-webpage-is-online-looking-forward-to-share-my-academic-progress-here",
